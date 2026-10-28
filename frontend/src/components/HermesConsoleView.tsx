@@ -125,12 +125,12 @@ export const HermesConsoleView: React.FC = () => {
   // Fetch Hermes Health & Config on mount
   const fetchHealthAndConfig = async () => {
     try {
-      const res = await fetch('http://localhost:8787/health');
+      const res = await fetch('/hermes-api/health');
       if (res.ok) {
         const data = await res.json();
         setServerHealth(data);
       }
-      const cfgRes = await fetch('http://localhost:8787/api/config');
+      const cfgRes = await fetch('/hermes-api/api/config');
       if (cfgRes.ok) {
         const cfgData = await cfgRes.json();
         setProviderConfig((prev) => ({
@@ -208,7 +208,7 @@ export const HermesConsoleView: React.FC = () => {
     setIsTesting(true);
     setTestResult(null);
     try {
-      const res = await fetch('http://localhost:8787/api/test-connection', {
+      const res = await fetch('/hermes-api/api/test-connection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -239,7 +239,7 @@ export const HermesConsoleView: React.FC = () => {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      const res = await fetch('http://localhost:8787/api/config', {
+      const res = await fetch('/hermes-api/api/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -277,7 +277,7 @@ export const HermesConsoleView: React.FC = () => {
     setIsSending(true);
 
     try {
-      const res = await fetch('http://localhost:8787/api/chat', {
+      const res = await fetch('/hermes-api/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

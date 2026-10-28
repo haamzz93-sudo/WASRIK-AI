@@ -51,7 +51,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onBackToLa
     setErrorMessage(null);
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+      const response = await fetch('/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
@@ -102,7 +102,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onBackToLa
 
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/v1/auth/register', {
+      const response = await fetch('/api/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

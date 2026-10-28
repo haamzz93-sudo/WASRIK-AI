@@ -21,7 +21,7 @@ export const MultiAgentLiveRunner: React.FC = () => {
 
     try {
       // Connect to WebSocket or REST API
-      const response = await fetch('http://localhost:8000/api/v1/hermes/run-audit', {
+      const response = await fetch('/api/v1/hermes/run-audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
