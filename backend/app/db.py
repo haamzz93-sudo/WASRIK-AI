@@ -8,6 +8,16 @@ import pymysql
 from pymysql.cursors import DictCursor
 from typing import List, Dict, Any, Optional
 
+try:
+    from dotenv import load_dotenv
+    env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+    if os.path.exists(env_path):
+        load_dotenv(env_path)
+    else:
+        load_dotenv()
+except ImportError:
+    pass
+
 def get_db_connection():
     """
     Koneksi ke MySQL database.
