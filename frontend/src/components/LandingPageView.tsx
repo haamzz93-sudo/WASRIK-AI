@@ -72,22 +72,22 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
       {/* =========================================================================
           DYNAMIC ISLAND FLOATING HEADER (APPLE STYLE LIQUID GLASS CAPSULE)
          ========================================================================= */}
-      <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+      <header className="fixed top-2 sm:top-4 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 pointer-events-none">
         <div
           onMouseEnter={() => setIslandExpanded(true)}
           onMouseLeave={() => setIslandExpanded(false)}
-          className={`pointer-events-auto liquid-island rounded-full transition-all duration-300 flex items-center justify-between gap-3 sm:gap-5 px-3.5 py-2 sm:px-5 sm:py-2.5 ${
+          className={`pointer-events-auto liquid-island rounded-full transition-all duration-300 flex items-center justify-between gap-1.5 sm:gap-5 px-2.5 py-1.5 sm:px-5 sm:py-2.5 w-full max-w-[96vw] sm:max-w-max ${
             isScrolled || islandExpanded
               ? 'scale-100 shadow-liquid-hover'
               : 'scale-[0.98]'
           }`}
         >
           {/* Brand Logo inside Dynamic Island */}
-          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div className="flex items-center gap-2 sm:gap-2.5 cursor-pointer shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <img
               src="/assets/wasrik_ai_icon.jpg"
               alt="Wasrik AI"
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover shadow-xs border border-white/80 dark:border-slate-700"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover shadow-xs border border-white/80 dark:border-slate-700 shrink-0"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
@@ -128,13 +128,13 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
           </nav>
 
           {/* Right Action Capsule Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Theme Toggle Button */}
             <button
               type="button"
               onClick={toggleTheme}
               title={theme === 'dark' ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap'}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-90"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-90 shrink-0"
             >
               {theme === 'dark' ? (
                 <IconSun className="w-3.5 h-3.5 text-amber-400" />
@@ -144,14 +144,16 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             </button>
 
             <button
+              type="button"
               onClick={onOpenDatasheet}
-              className="px-3 py-1.5 text-[11px] font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-800/80 rounded-full transition-all cursor-pointer shadow-xs whitespace-nowrap"
+              className="hidden sm:inline-flex px-3 py-1.5 text-[11px] font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-800/80 rounded-full transition-all cursor-pointer shadow-xs whitespace-nowrap"
             >
               Data Sampel 2026
             </button>
             <button
+              type="button"
               onClick={onGoToLogin}
-              className="px-3.5 sm:px-4 py-1.5 text-[11px] font-bold text-white bg-[#009640] hover:bg-[#00883E] rounded-full shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+              className="px-3 sm:px-4 py-1.5 text-[11px] font-bold text-white bg-[#009640] hover:bg-[#00883E] rounded-full shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 whitespace-nowrap active:scale-95"
             >
               <span>Portal SSO</span>
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -165,7 +167,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
       {/* =========================================================================
           HERO SECTION WITH GENERATED LIQUID GLASS AMBIENT BACKDROP
          ========================================================================= */}
-      <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+      <section className="relative pt-24 pb-16 sm:pt-36 sm:pb-24 md:pt-40 md:pb-28 overflow-hidden">
         {/* Ambient Liquid Glass Wallpaper Layer with Nano Banana Generated Backdrop */}
         <div
           className="absolute inset-0 bg-cover bg-center opacity-40 dark:opacity-50 mix-blend-multiply dark:mix-blend-screen pointer-events-none transition-all duration-700"
@@ -176,26 +178,27 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
 
         <div className="max-w-5xl mx-auto px-4 text-center relative z-10 animate-reveal-1">
           {/* Category Badge Capsule */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full liquid-glass-emerald text-emerald-900 dark:text-emerald-200 text-xs font-bold mb-6 shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
-            <span>BPJS Kesehatan Healthkathon 2026 • Kategori 3: Efisiensi Risiko Pemberi Kerja</span>
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full liquid-glass-emerald text-emerald-900 dark:text-emerald-200 text-[10.5px] sm:text-xs font-bold mb-5 sm:mb-6 shadow-xs max-w-[95vw]">
+            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping shrink-0" />
+            <span className="truncate">BPJS Kesehatan Healthkathon 2026 • Kategori 3: Efisiensi Risiko Pemberi Kerja</span>
           </div>
 
           {/* Hero Main Headline */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15] mb-6">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.2] mb-4 sm:mb-6 px-1">
             Autonomous Multi-Agent AI untuk Kepatuhan Iuran Pemberi Kerja JKN
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8 font-normal">
+          <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8 font-normal px-2">
             Mengubah audit manual reaktif menjadi pengawasan otonom proaktif. Mendeteksi manipulasi upah (<strong className="text-slate-900 dark:text-white font-bold">Under-Reporting Wage</strong>) dan <strong className="text-slate-900 dark:text-white font-bold">PDUK</strong> dengan 4 Agen AI terspesialisasi serta gerbang kepatuhan <strong className="text-emerald-700 dark:text-emerald-400 font-bold">Human-in-the-Loop (PP No. 86/2013)</strong>.
           </p>
 
           {/* Hero CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-3.5 mb-10">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-3.5 mb-8 sm:mb-10 max-w-sm sm:max-w-none mx-auto w-full px-2">
             <button
+              type="button"
               onClick={onGoToWorkbench}
-              className="px-6 py-3 text-xs sm:text-sm font-bold text-white bg-[#009640] hover:bg-[#00883E] rounded-full shadow-lg hover:shadow-xl transition-all flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+              className="w-full sm:w-auto px-6 py-3.5 text-xs sm:text-sm font-bold text-white bg-[#009640] hover:bg-[#00883E] rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5 active:scale-95"
             >
               <span>Buka Dual-Pane HITL Workbench</span>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -203,38 +206,40 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
               </svg>
             </button>
             <button
+              type="button"
               onClick={onGoToUploader}
-              className="px-5 py-3 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 liquid-glass hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all cursor-pointer shadow-xs"
+              className="w-full sm:w-auto px-5 py-3 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 liquid-glass hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all cursor-pointer shadow-xs active:scale-95 text-center"
             >
               Upload &amp; Audit Berkas Sendiri
             </button>
             <button
+              type="button"
               onClick={onGoToQueue}
-              className="px-5 py-3 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 liquid-glass hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all cursor-pointer shadow-xs"
+              className="w-full sm:w-auto px-5 py-3 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 liquid-glass hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all cursor-pointer shadow-xs active:scale-95 text-center"
             >
               Antrean 523k Badan Usaha
             </button>
           </div>
 
           {/* Legal Compliance Indicator Badges */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
-            <span className="flex items-center gap-1.5 liquid-glass px-3 py-1 rounded-full">
-              <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-4 md:gap-6 text-[10.5px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium px-2">
+            <span className="flex items-center gap-1.5 liquid-glass px-3 py-1 rounded-full w-full sm:w-auto justify-center">
+              <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              Sesuai PP No. 86/2013 (Sanksi TMP2T)
+              <span>Sesuai PP No. 86/2013 (Sanksi TMP2T)</span>
             </span>
-            <span className="flex items-center gap-1.5 liquid-glass px-3 py-1 rounded-full">
-              <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+            <span className="flex items-center gap-1.5 liquid-glass px-3 py-1 rounded-full w-full sm:w-auto justify-center">
+              <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              Salted SHA-256 (UU PDP No. 27/2022)
+              <span>Salted SHA-256 (UU PDP No. 27/2022)</span>
             </span>
-            <span className="flex items-center gap-1.5 liquid-glass px-3 py-1 rounded-full">
-              <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+            <span className="flex items-center gap-1.5 liquid-glass px-3 py-1 rounded-full w-full sm:w-auto justify-center">
+              <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              FastAPI + MySQL Database
+              <span>FastAPI + MySQL Database</span>
             </span>
           </div>
         </div>

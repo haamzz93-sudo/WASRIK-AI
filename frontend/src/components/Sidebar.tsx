@@ -22,6 +22,8 @@ interface SidebarProps {
   onOpenLogout: () => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -32,6 +34,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenLogout,
   isCollapsed,
   onToggleCollapse,
+  isMobileOpen,
+  onCloseMobile,
 }) => {
   const { theme, toggleTheme } = useTheme();
 
@@ -114,11 +118,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside
-      className={`h-screen min-h-screen bg-gradient-to-b from-[#004D23] via-[#003E1C] to-[#002D14] dark:from-[#032414] dark:via-[#021B0F] dark:to-[#01140B] text-white border-r border-[#006930]/80 dark:border-emerald-950/80 flex flex-col justify-between transition-all duration-300 z-40 shrink-0 shadow-lg ${
-        isCollapsed ? 'w-20' : 'w-72'
-      }`}
-    >
+    <>
+      {/* Mobile Backdrop Overlay */}
+      {isMobileOpen && (
+        <div
+          onClick={onCloseMobile}
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 md:hidden animate-fade-in"
+        />
+      )}
+
+      <aside
+        className={`fixed md:static inset-y-0 left-0 z-50 h-screen min-h-screen bg-gradient-to-b from-[#004D23] via-[#003E1C] to-[#002D14] dark:from-[#032414] dark:via-[#021B0F] dark:to-[#01140B] text-white border-r border-[#006930]/80 dark:border-emerald-950/80 flex flex-col justify-between transition-all duration-300 shrink-0 shadow-2xl md:shadow-lg ${
+          isMobileOpen ? 'translate-x-0 w-72' : '-translate-x-full md:translate-x-0'
+        } ${isCollapsed ? 'md:w-20' : 'md:w-72'}`}
+      >
       {/* Top Header & Brand */}
       <div className="p-4 border-b border-white/10 flex items-center justify-between">
         {!isCollapsed ? (
@@ -134,20 +147,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         )}
 
-        <button
-          onClick={onToggleCollapse}
-          className="p-1.5 rounded-lg text-emerald-200/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-          title={isCollapsed ? 'Perluas Menu' : 'Ciutkan Menu'}
-        >
-          <svg
-            className={`w-4 h-4 transform transition-transform ${isCollapsed ? 'rotate-180' : ''}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div className="flex items-center gap-1">
+          {/* Mobile Close Drawer Button */}
+          {onCloseMobile && (
+            <button
+              type="button"
+              onClick={onCloseMobile}
+              className="md:hidden p-1.5 rounded-lg text-emerald-200/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              title="Tutup Menu"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+
+          {/* Desktop Collapse Button */}
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            className="hidden md:inline-flex p-1.5 rounded-lg text-emerald-200/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title={isCollapsed ? 'Perluas Menu' : 'Ciutkan Menu'}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-          </svg>
-        </button>
+            <svg
+              className={`w-4 h-4 transform transition-transform ${isCollapsed ? 'rotate-180' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Main Navigation Items (Scrollable) */}
@@ -261,6 +292,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
     </aside>
+    </>
   );
 };
 

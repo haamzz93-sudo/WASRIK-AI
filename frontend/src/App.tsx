@@ -42,6 +42,7 @@ export const App: React.FC = () => {
 
   const [currentView, setCurrentView] = useState<string>('landing');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Live Database states
   const [employers, setEmployers] = useState<Employer[]>(MOCK_EMPLOYERS);
@@ -231,25 +232,35 @@ export const App: React.FC = () => {
       {/* 100vh Sticky Responsive Sidebar */}
       <Sidebar
         currentView={currentView}
-        onNavigate={(view) => setCurrentView(view)}
+        onNavigate={(view) => {
+          setCurrentView(view);
+          setIsMobileMenuOpen(false);
+        }}
         currentUser={currentUser}
         onOpenDatasheet={() => setIsDatasheetOpen(true)}
         onOpenLogout={() => {
           localStorage.removeItem('wasrik_token');
           setCurrentView('login');
+          setIsMobileMenuOpen(false);
         }}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        isMobileOpen={isMobileMenuOpen}
+        onCloseMobile={() => setIsMobileMenuOpen(false)}
       />
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        <div className="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
           {/* Top Header */}
           <TopHeader
             currentUser={currentUser}
             currentView={currentView}
-            onNavigate={(view) => setCurrentView(view)}
+            onNavigate={(view) => {
+              setCurrentView(view);
+              setIsMobileMenuOpen(false);
+            }}
             onOpenDatasheet={() => setIsDatasheetOpen(true)}
+            onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
             onSwitchRole={(role) => {
               setCurrentUser((prev) => ({
                 ...prev,

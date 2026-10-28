@@ -41,7 +41,7 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
   return (
     <div className="flex-1 flex flex-col bg-[#F8FAFC] dark:bg-[#0B0F17] overflow-hidden font-sans text-slate-800 dark:text-slate-100 transition-colors duration-200">
       {/* Top Banner / Case Overview */}
-      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-6 py-4 flex flex-wrap items-center justify-between gap-4 shrink-0 shadow-2xs">
+      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-3.5 sm:px-6 py-3 sm:py-4 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 shrink-0 shadow-2xs">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/70 dark:text-red-300 dark:border-red-800">
@@ -49,7 +49,7 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
             </span>
             <span className="text-xs text-slate-400 font-mono">ID: {finding.findingId}</span>
           </div>
-          <h1 className="text-xl font-black text-slate-900 dark:text-white mt-1 tracking-tight">
+          <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-1 tracking-tight">
             {employer.companyName}
           </h1>
           <p className="text-xs text-slate-500 font-medium">
@@ -57,7 +57,7 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between md:justify-end gap-3 sm:gap-6 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-slate-200 dark:border-slate-800">
           <div className="text-right">
             <p className="text-[11px] font-semibold text-slate-500">Potensi Kebocoran Iuran JKN</p>
             <p className="text-lg font-black text-amber-700 dark:text-amber-400 font-mono">
@@ -74,7 +74,7 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
 
           <button
             onClick={() => onOpenSanctionModal(finding, employer)}
-            className="px-4 py-2 text-xs font-bold text-white bg-red-700 hover:bg-red-800 rounded-xl shadow-xs flex items-center gap-2 transition-all cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2.5 text-xs font-bold text-white bg-red-700 hover:bg-red-800 rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -85,7 +85,7 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
       </div>
 
       {/* Main Dual-Pane Screen */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
         {/* ================= LEFT PANE: OCR PDF & EVIDENCE VIEWER ================= */}
         <div className="w-full lg:w-1/2 p-4 md:p-6 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800 overflow-y-auto bg-slate-100/60 dark:bg-slate-950/40">
           <div className="flex items-center justify-between mb-3">

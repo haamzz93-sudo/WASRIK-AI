@@ -9,6 +9,7 @@ interface TopHeaderProps {
   onNavigate: (view: string) => void;
   onOpenDatasheet: () => void;
   onSwitchRole: (role: UserProfile['role']) => void;
+  onToggleMobileMenu?: () => void;
 }
 
 export const TopHeader: React.FC<TopHeaderProps> = ({
@@ -17,6 +18,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   onNavigate,
   onOpenDatasheet,
   onSwitchRole,
+  onToggleMobileMenu,
 }) => {
   const { theme, toggleTheme } = useTheme();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -73,45 +75,59 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   }, []);
 
   return (
-    <header className="h-14 bg-gradient-to-r from-[#004D23] via-[#005728] to-[#00441F] dark:from-[#032414] dark:via-[#021B0F] dark:to-[#01140B] border-b border-[#006930]/80 dark:border-emerald-950/80 px-4 sm:px-5 flex items-center justify-between sticky top-0 z-30 transition-all duration-300 shadow-md">
+    <header className="h-14 bg-gradient-to-r from-[#004D23] via-[#005728] to-[#00441F] dark:from-[#032414] dark:via-[#021B0F] dark:to-[#01140B] border-b border-[#006930]/80 dark:border-emerald-950/80 px-3 sm:px-5 flex items-center justify-between sticky top-0 z-30 transition-all duration-300 shadow-md">
       
-      {/* Left: Interactive Breadcrumb Shortcut Buttons */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs font-medium min-w-0">
-        
-        {/* Shortcut Button 1: Portal Wasrik -> Landing Page */}
-        <button
-          type="button"
-          onClick={() => onNavigate('landing')}
-          title="Shortcut: Kembali ke Halaman Utama (Pitch)"
-          className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-emerald-100 hover:text-white bg-white/10 hover:bg-white/20 active:scale-95 border border-white/15 transition-all duration-200 cursor-pointer shadow-2xs"
-        >
-          <svg className="w-3.5 h-3.5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-          </svg>
-          <span className="font-semibold">Portal Wasrik</span>
-        </button>
+      {/* Left: Mobile Hamburger & Interactive Breadcrumb */}
+      <div className="flex items-center gap-2 min-w-0">
+        {onToggleMobileMenu && (
+          <button
+            type="button"
+            onClick={onToggleMobileMenu}
+            className="md:hidden p-2 -ml-1 rounded-xl text-emerald-100 hover:text-white bg-white/10 hover:bg-white/20 active:scale-95 transition-all cursor-pointer shrink-0"
+            title="Buka Menu Navigasi"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        )}
 
-        <span className="hidden sm:inline text-emerald-300/60 font-light select-none">/</span>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs font-medium min-w-0">
+          {/* Shortcut Button 1: Portal Wasrik -> Landing Page */}
+          <button
+            type="button"
+            onClick={() => onNavigate('landing')}
+            title="Shortcut: Kembali ke Halaman Utama (Pitch)"
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-emerald-100 hover:text-white bg-white/10 hover:bg-white/20 active:scale-95 border border-white/15 transition-all duration-200 cursor-pointer shadow-2xs shrink-0"
+          >
+            <svg className="w-3.5 h-3.5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span className="font-semibold">Portal Wasrik</span>
+          </button>
 
-        {/* Shortcut Button 2: Branch Office -> Priority Queue */}
-        <button
-          type="button"
-          onClick={() => onNavigate('queue')}
-          title="Shortcut: Lihat Antrean Prioritas Kantor Cabang"
-          className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-emerald-100 hover:text-white bg-white/10 hover:bg-white/20 active:scale-95 border border-white/15 transition-all duration-200 cursor-pointer shadow-2xs"
-        >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-semibold">{currentUser?.branch || 'KC Cikarang'}</span>
-        </button>
+          <span className="hidden sm:inline text-emerald-300/60 font-light select-none">/</span>
 
-        <span className="hidden md:inline text-emerald-300/60 font-light select-none">/</span>
+          {/* Shortcut Button 2: Branch Office -> Priority Queue */}
+          <button
+            type="button"
+            onClick={() => onNavigate('queue')}
+            title="Shortcut: Lihat Antrean Prioritas Kantor Cabang"
+            className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-emerald-100 hover:text-white bg-white/10 hover:bg-white/20 active:scale-95 border border-white/15 transition-all duration-200 cursor-pointer shadow-2xs shrink-0"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-semibold">{currentUser?.branch || 'KC Cikarang'}</span>
+          </button>
 
-        {/* Shortcut Pill 3: Current View Active Capsule */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/20 text-white font-bold text-xs border border-white/30 shadow-xs backdrop-blur-xs truncate transition-all duration-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-300" />
-          <span className="truncate">{viewTitles[currentView] || 'Sistem Pengawasan'}</span>
-        </div>
-      </nav>
+          <span className="hidden md:inline text-emerald-300/60 font-light select-none">/</span>
+
+          {/* Shortcut Pill 3: Current View Active Capsule */}
+          <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-xl bg-white/20 text-white font-bold text-xs border border-white/30 shadow-xs backdrop-blur-xs truncate transition-all duration-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 shrink-0" />
+            <span className="truncate max-w-[130px] sm:max-w-none">{viewTitles[currentView] || 'Sistem Pengawasan'}</span>
+          </div>
+        </nav>
+      </div>
 
       {/* Right: Calm, Harmonious Controls matching Wasrik Green Theme */}
       <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">

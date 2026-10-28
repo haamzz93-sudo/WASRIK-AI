@@ -38,11 +38,11 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
   };
 
   return (
-    <div className="flex-1 p-6 overflow-y-auto bg-[#F8FAFC] dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 transition-colors duration-200">
+    <div className="flex-1 p-3.5 sm:p-6 overflow-y-auto bg-[#F8FAFC] dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 transition-colors duration-200">
       {/* Header & National Scope Banner */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Antrean Prioritas Pengawasan Badan Usaha (Priority Queue)
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -50,7 +50,7 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <div className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xs text-xs">
             <span className="text-slate-500">Total Terpantau:</span>{' '}
             <span className="font-extrabold text-slate-900 dark:text-white">523.000 BU</span>
@@ -63,9 +63,9 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs mb-4 sm:mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3">
         {/* Risk Category Tabs */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full md:w-auto pb-1 md:pb-0">
           {(['ALL', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as const).map((lvl) => (
             <button
               key={lvl}
@@ -82,7 +82,7 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
         </div>
 
         {/* Search Input */}
-        <div className="w-full sm:w-72 relative">
+        <div className="w-full md:w-72 relative">
           <input
             type="text"
             value={searchTerm}
@@ -99,7 +99,7 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
       {/* Priority Table */}
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[720px]">
             <thead className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-bold uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="py-3 px-4">Badan Usaha &amp; Sektor</th>
