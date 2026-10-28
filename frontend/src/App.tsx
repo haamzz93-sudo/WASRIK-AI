@@ -57,7 +57,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     const fetchBackendData = async () => {
       try {
-        const empRes = await fetch('http://localhost:8000/api/v1/employers/priority-queue');
+        const empRes = await fetch('/api/v1/employers/priority-queue');
         if (empRes.ok) {
           const empJson = await empRes.json();
           if (empJson.data && empJson.data.length > 0) {
@@ -66,7 +66,7 @@ export const App: React.FC = () => {
           }
         }
 
-        const findRes = await fetch('http://localhost:8000/api/v1/findings');
+        const findRes = await fetch('/api/v1/findings');
         if (findRes.ok) {
           const findJson = await findRes.json();
           if (findJson && findJson.length > 0) {
@@ -102,7 +102,7 @@ export const App: React.FC = () => {
   // Decision actions with MySQL persistence
   const handleApproveFinding = async (findingId: string, notes: string) => {
     try {
-      await fetch('http://localhost:8000/api/v1/hitl/submit-decision', {
+      await fetch('/api/v1/hitl/submit-decision', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -134,7 +134,7 @@ export const App: React.FC = () => {
 
   const handleOverrideFinding = async (findingId: string, adjustedLoss: number, notes: string) => {
     try {
-      await fetch('http://localhost:8000/api/v1/hitl/submit-decision', {
+      await fetch('/api/v1/hitl/submit-decision', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -163,7 +163,7 @@ export const App: React.FC = () => {
 
   const handleRejectFinding = async (findingId: string, notes: string) => {
     try {
-      await fetch('http://localhost:8000/api/v1/hitl/submit-decision', {
+      await fetch('/api/v1/hitl/submit-decision', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
