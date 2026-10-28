@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  wasrik-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1
+    depends_on:
+      - wasrik-backend
+
+  wasrik-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://wasrik_user:wasrik_pass@postgres-db:5432/wasrik_db
+      - SECRET_KEY=wasrik_super_secret_corporate_compliance_key_2026
+    depends_on:
+      - postgres-db
+
+  postgres-db:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=wasrik_db
+      - POSTGRES_USER=wasrik_user
+      - POSTGRES_PASSWORD=wasrik_pass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

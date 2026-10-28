@@ -1,0 +1,2 @@
+-- Refer to D:\projek warasik\wasrik_db_mysql.sql for the complete MySQL schema and seed data.
+-- Auto-generated copy for backend package

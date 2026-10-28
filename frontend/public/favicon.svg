@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="favGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00B050" />
+      <stop offset="60%" stop-color="#009640" />
+      <stop offset="100%" stop-color="#007230" />
+    </linearGradient>
+    <linearGradient id="favAi" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Base -->
+  <circle cx="50" cy="50" r="48" fill="#F0FDF4" stroke="#DCFCE7" stroke-width="2" />
+
+  <!-- AI Crown Pill centered ON TOP of the W -->
+  <g transform="translate(32, 10)">
+    <rect x="0" y="0" width="36" height="20" rx="6" fill="url(#favAi)" />
+    <text x="18" y="14.5" font-family="'Poppins', sans-serif" font-weight="900" font-size="12" letter-spacing="1" fill="#FFFFFF" text-anchor="middle">
+      AI
+    </text>
+  </g>
+
+  <!-- Micro Connector -->
+  <line x1="50" y1="30" x2="50" y2="42" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" />
+
+  <!-- Geometric 'W' in Poppins proportions -->
+  <path d="M 18 42 L 32 82 C 32.5 83.5, 34 84, 35.5 83.5 L 43 81 L 32 42 Z" fill="url(#favGreen)" />
+  <path d="M 32 42 L 48 80 C 49 82, 51 82, 52 80 L 68 42 L 58 42 L 50 64 L 42 42 Z" fill="url(#favGreen)" />
+  <path d="M 82 42 L 68 82 C 67.5 83.5, 66 84, 64.5 83.5 L 57 81 L 68 42 Z" fill="url(#favGreen)" />
+
+  <!-- Dynamic Gold Audit Dot -->
+  <circle cx="50" cy="52" r="3.5" fill="#F59E0B" stroke="#FFFFFF" stroke-width="1.5" />
+</svg>
