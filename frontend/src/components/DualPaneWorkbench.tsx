@@ -44,7 +44,7 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
       <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-6 py-4 flex flex-wrap items-center justify-between gap-4 shrink-0 shadow-2xs">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200">
+            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/70 dark:text-red-300 dark:border-red-800">
               SKOR RISIKO: {employer.complianceRiskScore} • {employer.riskCategory}
             </span>
             <span className="text-xs text-slate-400 font-mono">ID: {finding.findingId}</span>
@@ -60,7 +60,7 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
         <div className="flex items-center gap-6">
           <div className="text-right">
             <p className="text-[11px] font-semibold text-slate-500">Potensi Kebocoran Iuran JKN</p>
-            <p className="text-lg font-black text-amber-800 font-mono">
+            <p className="text-lg font-black text-amber-700 dark:text-amber-400 font-mono">
               Rp {finding.estimatedLossAmount.toLocaleString('id-ID')}
             </p>
           </div>
@@ -91,11 +91,11 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
-              <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              <h2 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                 Bukti Dokumen Fisik OCR (300 DPI Vision Pipeline)
               </h2>
             </div>
-            <span className="text-[10px] text-slate-500 bg-white px-2.5 py-1 rounded-full border border-slate-200 shadow-2xs">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 shadow-2xs">
               Batch: Slip_Gaji_Q3_2026.pdf • Hal 12/150
             </span>
           </div>
@@ -103,7 +103,7 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
           {/* Interactive OCR Physical Slip Simulation in Official Document Font (Times New Roman) */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-700/80 shadow-sm p-6 relative overflow-hidden font-document text-slate-900 dark:text-slate-100 leading-normal">
             {/* Watermark Tag */}
-            <div className="absolute right-4 top-4 font-sans text-[9px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+            <div className="absolute right-4 top-4 font-sans text-[9px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-full">
               VERIFIKASI OCR WASRIK AI: 94.2% CONFIDENCE
             </div>
 
@@ -115,35 +115,35 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-sans">
                 SLIP GAJI KARYAWAN TETAP • PERIODE: SEPTEMBER 2026
               </p>
-              <div className="mt-3 grid grid-cols-2 text-xs text-slate-700 font-sans gap-1.5">
+              <div className="mt-3 grid grid-cols-2 text-xs text-slate-700 dark:text-slate-300 font-sans gap-2">
                 <div>
-                  <span className="font-semibold text-slate-900">Nama:</span> B*** S****** (Masked PDP)
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">Nama:</span> B*** S****** (Masked PDP)
                 </div>
                 <div>
-                  <span className="font-semibold text-slate-900">NIK (SHA-256):</span> e3b0c442...89a
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">NIK (SHA-256):</span> e3b0c442...89a
                 </div>
                 <div>
-                  <span className="font-semibold text-slate-900">Jabatan:</span> Teknisi Manufaktur Senior
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">Jabatan:</span> Teknisi Manufaktur Senior
                 </div>
                 <div>
-                  <span className="font-semibold text-slate-900">No. Rekening:</span> 0088-****-1982
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">No. Rekening:</span> 0088-****-1982
                 </div>
               </div>
             </div>
 
             {/* Salary Breakdown Table */}
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-700">Gaji Pokok Riil</span>
-                <span className="font-mono font-bold text-slate-900">Rp 7.000.000</span>
+            <div className="space-y-2 text-xs font-sans">
+              <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                <span className="text-slate-600 dark:text-slate-300">Gaji Pokok Riil</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">Rp 7.000.000</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-700">Tunjangan Jabatan &amp; Tetap</span>
-                <span className="font-mono font-bold text-slate-900">Rp 1.500.000</span>
+              <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                <span className="text-slate-600 dark:text-slate-300">Tunjangan Jabatan &amp; Tetap</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">Rp 1.500.000</span>
               </div>
-              <div className="flex justify-between py-2 bg-slate-50 dark:bg-slate-800/80 px-2.5 rounded-lg font-bold">
-                <span className="text-slate-900">Total Take-Home Pay Riil (Dasar Iuran PP 86):</span>
-                <span className="font-mono text-emerald-800">Rp 8.500.000</span>
+              <div className="flex justify-between py-2 bg-slate-100/90 dark:bg-slate-800/90 px-3 rounded-xl font-bold">
+                <span className="text-slate-900 dark:text-slate-100">Total Take-Home Pay Riil (Dasar Iuran PP 86):</span>
+                <span className="font-mono text-emerald-700 dark:text-emerald-400 text-sm">Rp 8.500.000</span>
               </div>
             </div>
 
@@ -171,14 +171,14 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
             </div>
 
             {/* Document Footer */}
-            <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400 font-sans">
+            <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 font-sans">
               <span>Dicetak otomatis oleh payroll core HRIS</span>
               <span>Dokumen Bukti Audit Wasrik No: AUD-2026-CKR-0012</span>
             </div>
           </div>
 
-          <div className="mt-4 p-3.5 bg-amber-50/80 border border-amber-200 rounded-xl text-xs text-amber-950 flex items-start gap-2.5 font-sans">
-            <svg className="w-4 h-4 text-amber-800 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mt-4 p-3.5 bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/70 rounded-xl text-xs text-amber-950 dark:text-amber-200 flex items-start gap-2.5 font-sans">
+            <svg className="w-4 h-4 text-amber-800 dark:text-amber-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div>
@@ -237,14 +237,14 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs">
                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tingkat Keyakinan AI</span>
-                    <p className="text-xl font-black text-emerald-700 mt-1">
+                    <p className="text-xl font-black text-emerald-700 dark:text-emerald-400 mt-1">
                       {(finding.confidenceScore * 100).toFixed(1)}%
                     </p>
                     <p className="text-[10px] text-slate-400 mt-0.5">Model: Gemini 3.8 Flash Vision</p>
                   </div>
                   <div className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs">
                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status Validasi HITL</span>
-                    <p className="text-xl font-black text-amber-700 mt-1">
+                    <p className="text-xl font-black text-amber-700 dark:text-amber-400 mt-1">
                       {isSubmitted ? 'TERCATAT' : 'PENDING'}
                     </p>
                     <p className="text-[10px] text-slate-400 mt-0.5">Otorisasi Petugas Wasrik</p>
@@ -275,13 +275,13 @@ export const DualPaneWorkbench: React.FC<DualPaneWorkbenchProps> = ({
             <div className="p-5 bg-slate-50/90 dark:bg-slate-900/90 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-xs">
               <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center justify-between">
                 <span className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 text-emerald-700 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
                   </svg>
                   <span>Gerbang Keputusan Auditor (HITL Governance Gate)</span>
                 </span>
                 {decisionMode && (
-                  <span className="text-[10px] font-bold text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                  <span className="text-[10px] font-bold text-emerald-900 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">
                     Pilihan: {decisionMode}
                   </span>
                 )}

@@ -27,13 +27,13 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
   const getBadgeStyle = (category: RiskLevel) => {
     switch (category) {
       case 'CRITICAL':
-        return 'bg-red-50 text-red-800 border-red-300 font-bold';
+        return 'bg-red-50 text-red-800 border-red-300 dark:bg-red-950/70 dark:text-red-300 dark:border-red-800 font-bold';
       case 'HIGH':
-        return 'bg-amber-50 text-amber-800 border-amber-300 font-bold';
+        return 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800 font-bold';
       case 'MEDIUM':
-        return 'bg-sky-50 text-sky-800 border-sky-300';
+        return 'bg-sky-50 text-sky-800 border-sky-300 dark:bg-sky-950/70 dark:text-sky-300 dark:border-sky-800';
       case 'LOW':
-        return 'bg-emerald-50 text-emerald-800 border-emerald-300';
+        return 'bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-950/70 dark:text-emerald-300 dark:border-emerald-800';
     }
   };
 
@@ -42,7 +42,7 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
       {/* Header & National Scope Banner */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Antrean Prioritas Pengawasan Badan Usaha (Priority Queue)
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -51,13 +51,13 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg shadow-xs text-xs">
+          <div className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xs text-xs">
             <span className="text-slate-500">Total Terpantau:</span>{' '}
-            <span className="font-extrabold text-slate-900">523.000 BU</span>
+            <span className="font-extrabold text-slate-900 dark:text-white">523.000 BU</span>
           </div>
-          <div className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg shadow-xs text-xs">
+          <div className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xs text-xs">
             <span className="text-slate-500">Potensi Revenue Leakage:</span>{' '}
-            <span className="font-extrabold text-emerald-700">Rp 4,25 Triliun</span>
+            <span className="font-extrabold text-emerald-700 dark:text-emerald-400">Rp 4,25 Triliun</span>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 filterLevel === lvl
                   ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               {lvl === 'ALL' ? 'Semua Risiko' : lvl}
@@ -88,7 +88,7 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Cari Badan Usaha / NPWP / KC..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-hidden"
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:outline-hidden"
           />
           <svg className="w-4 h-4 text-slate-400 absolute left-2.5 top-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -97,10 +97,10 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
       </div>
 
       {/* Priority Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+            <thead className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-bold uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="py-3 px-4">Badan Usaha &amp; Sektor</th>
                 <th className="py-3 px-4">Kantor Cabang</th>
@@ -111,7 +111,7 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
                 <th className="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-medium">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
               {filtered.map((emp) => {
                 const isSelected = emp.id === selectedEmployerId;
                 const pdukCount = emp.totalActiveEmployees - emp.bpjsRegisteredEmployees;
@@ -124,18 +124,18 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
                     }`}
                   >
                     <td className="py-3.5 px-4">
-                      <p className="font-extrabold text-slate-900">{emp.companyName}</p>
+                      <p className="font-extrabold text-slate-900 dark:text-white">{emp.companyName}</p>
                       <p className="text-[11px] text-slate-500 font-mono">
                         NPWP: {emp.npwp} • {emp.sectorName}
                       </p>
                     </td>
 
-                    <td className="py-3.5 px-4 text-slate-700 font-semibold">
+                    <td className="py-3.5 px-4 text-slate-700 dark:text-slate-300 font-semibold">
                       {emp.branchOffice}
                     </td>
 
                     <td className="py-3.5 px-4 text-center">
-                      <span className="font-mono font-bold text-slate-800">
+                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
                         {emp.bpjsRegisteredEmployees} / {emp.totalActiveEmployees}
                       </span>
                       {pdukCount > 0 && (
@@ -146,7 +146,7 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
                     <td className="py-3.5 px-4 text-right font-mono">
                       {emp.arrearsAmount > 0 ? (
                         <>
-                          <p className="font-bold text-amber-800">
+                          <p className="font-bold text-amber-700 dark:text-amber-400">
                             Rp {emp.arrearsAmount.toLocaleString('id-ID')}
                           </p>
                           <p className="text-[10px] text-slate-500">
@@ -166,22 +166,22 @@ export const PriorityQueueView: React.FC<PriorityQueueViewProps> = ({
 
                     <td className="py-3.5 px-4 text-center">
                       {emp.sanctionStatus === 'NORMAL' && (
-                        <span className="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-semibold">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-semibold">
                           Belum Sanksi
                         </span>
                       )}
                       {emp.sanctionStatus === 'TEGURAN_1' && (
-                        <span className="text-[10px] text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded font-bold">
+                        <span className="text-[10px] text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/70 border border-amber-300 dark:border-amber-800 px-2 py-0.5 rounded font-bold">
                           Surat Teguran I
                         </span>
                       )}
                       {emp.sanctionStatus === 'TEGURAN_2' && (
-                        <span className="text-[10px] text-red-800 bg-red-100 border border-red-300 px-2 py-0.5 rounded font-bold">
+                        <span className="text-[10px] text-red-800 dark:text-red-300 bg-red-100 dark:bg-red-950/70 border border-red-300 dark:border-red-800 px-2 py-0.5 rounded font-bold">
                           Surat Teguran II
                         </span>
                       )}
                       {emp.sanctionStatus === 'TMP2T_REKOMENDASI' && (
-                        <span className="text-[10px] text-purple-900 bg-purple-100 border border-purple-300 px-2 py-0.5 rounded font-bold">
+                        <span className="text-[10px] text-purple-900 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/70 border border-purple-300 dark:border-purple-800 px-2 py-0.5 rounded font-bold">
                           Rekomendasi TMP2T
                         </span>
                       )}
