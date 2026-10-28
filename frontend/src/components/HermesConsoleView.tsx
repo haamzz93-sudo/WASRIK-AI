@@ -158,7 +158,7 @@ export const HermesConsoleView: React.FC = () => {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isSending]);
 
   const modelOptions: DropdownOption[] = [
     {
@@ -305,20 +305,19 @@ export const HermesConsoleView: React.FC = () => {
         };
         setMessages((prev) => [...prev, hermesMsg]);
       } else {
-        throw new Error('Hermes endpoint returned error');
+        const errText = await res.text().catch(() => '');
+        throw new Error(`Hermes endpoint error HTTP ${res.status}: ${errText || res.statusText}`);
       }
-    } catch (e) {
-      setTimeout(() => {
-        const fallbackMsg: Message = {
-          id: `hermes-${Date.now()}`,
-          sender: 'hermes',
-          text: `**[Hermes Wasrik Response]**\n\nInstruksi '${msg}' berhasil diproses melalui LangGraph State Machine. Ditemukan potensi anomali pada badan usaha target dengan Corporate Risk Score **91.32 / 100** dan potensi kebocoran iuran **Rp 441.052.000**. Rekomendasi tindakan administratif: Surat Teguran I sesuai PP No. 86 Tahun 2013.`,
-          thought: `1. Ekstraksi entitas dari '${msg}'\n2. Cek silang data peserta SIPP dengan bukti fisik slip gaji\n3. Kalkulasi penalti sanksi PP 86/2013`,
-          engineMode: 'RULE_ENGINE',
-          timestamp: new Date().toLocaleTimeString('id-ID'),
-        };
-        setMessages((prev) => [...prev, fallbackMsg]);
-      }, 500);
+    } catch (e: any) {
+      const errorMsg: Message = {
+        id: `hermes-${Date.now()}`,
+        sender: 'hermes',
+        text: `⚠️ **Gagal Melakukan Inferensi Neural**: ${e?.message || 'Koneksi ke backend Hermes terputus atau timeout'}.\n\n*Silakan periksa koneksi atau model Ollama di tab Provider & API Key.*`,
+        thought: `Hermes Frontend Exception:\n${e?.stack || e?.message || String(e)}`,
+        engineMode: 'RULE_ENGINE',
+        timestamp: new Date().toLocaleTimeString('id-ID'),
+      };
+      setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setIsSending(false);
     }
@@ -541,6 +540,34 @@ export const HermesConsoleView: React.FC = () => {
                   </div>
                 </div>
               ))}
+
+              {/* Live Thinking / Neural Reasoning Animation Bubble */}
+              {isSending && (
+                <div className="flex gap-3 max-w-3xl animate-in fade-in duration-300">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-md">
+                    <IconBrain className="w-4 h-4 animate-pulse text-white" />
+                  </div>
+                  <div className="p-3.5 rounded-2xl rounded-tl-none bg-white dark:bg-slate-800/90 border border-emerald-300/80 dark:border-emerald-700/80 text-xs shadow-xs space-y-2 max-w-[85%]">
+                    <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
+                      </span>
+                      <span>Hermes sedang menalar (Neural Chain-of-Thought)...</span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                      Memanggil model neural <code className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-1.5 py-0.5 rounded font-mono font-semibold">{selectedModel || 'llama3.2:3b'}</code> • Menginspeksi regulasi PP 86/2013 &amp; data kepatuhan MySQL...
+                    </p>
+                    <div className="flex items-center gap-1.5 pt-0.5 text-emerald-600 dark:text-emerald-400">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.3s]"></span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.15s]"></span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce"></span>
+                      <span className="text-[10.5px] text-slate-400 dark:text-slate-500 ml-2 italic">Menghitung kalkulasi denda &amp; risiko kepatuhan...</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div ref={messagesEndRef} />
             </div>
 
