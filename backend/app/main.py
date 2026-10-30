@@ -23,6 +23,7 @@ from app.models import (
 from app.agent_orchestrator import execute_audit_pipeline
 from app.hermes_agent import execute_hermes_audit_stream
 from app.synthetic_generator import generate_synthetic_payroll
+from app.datalake_client import datalake_client
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -278,6 +279,41 @@ def get_findings(employer_id: Optional[str] = None):
 # -----------------------------------------------------------------------------
 # 4. EXECUTE MULTI-AGENT AUDIT & SIMPAN KE MYSQL
 # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# 5. INTEGRASI EXTERNAL DATA LAKE (DS-001 s/d DS-006)
+# -----------------------------------------------------------------------------
+
+@app.get("/api/v1/datalake/employer/{employer_id}")
+def get_datalake_employer_sync(employer_id: str):
+    """
+    Endpoint agregasi federated query real-time:
+    Menarik sinkronisasi data dari ke-6 layanan DS-001 s/d DS-006 (Termasuk Klaim Rilis 2024).
+    """
+    employer = fetch_one("SELECT * FROM tenants_employers WHERE id = %s", (employer_id,))
+    nib = employer["nib"] if employer and employer.get("nib") else employer_id
+
+    master_bu = datalake_client.get_master_bu(nib)
+    sipp_wage = datalake_client.get_sipp_wage(nib)
+    wlkp_real = datalake_client.get_wlkp_real(nib)
+    billing = datalake_client.get_billing_status(nib)
+    claims = datalake_client.get_medical_claims(employer_id)
+    sanction = datalake_client.get_sanctions_oss(nib)
+
+    return {
+        "status": "success",
+        "employer_id": employer_id,
+        "nib": nib,
+        "company_name": employer["company_name"] if employer else (master_bu.get("company_name") if master_bu else "Badan Usaha Terdaftar"),
+        "sync_sources": {
+            "ds001_master_bu": master_bu,
+            "ds002_sipp_wage": sipp_wage,
+            "ds003_wlkp_kemnaker": wlkp_real,
+            "ds004_billing_bpjs": billing,
+            "ds005_medical_claims_real": claims,
+            "ds006_sanctions_oss": sanction
+        }
+    }
 
 @app.post("/api/v1/agent/execute-audit")
 def run_agent_audit(req: MultiAgentExecuteRequest):
