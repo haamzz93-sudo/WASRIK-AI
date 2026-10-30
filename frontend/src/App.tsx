@@ -18,29 +18,51 @@ import { SanctionLetterModal } from './components/SanctionLetterModal';
 
 import { MOCK_EMPLOYERS, MOCK_FINDINGS, CURRENT_USER } from './data/mockData';
 import { Employer, AgentFinding, UserProfile } from './types/wasrik';
+import { getSavedSession, saveSession, updateActiveView, clearSession } from './utils/session';
 
 export const App: React.FC = () => {
+  // Enterprise Session & Cookie Restoration
+  const session = getSavedSession();
+
   const [currentUser, setCurrentUser] = useState<UserProfile>(() => {
-    const saved = localStorage.getItem('wasrik_user');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return {
-          ...parsed,
-          name: parsed.name || 'Darmawan Lahru Riatma',
-          roleTitle: parsed.roleTitle || parsed.role_title || (parsed.role === 'supervisor' ? 'Kepala Cabang' : parsed.role === 'auditee' ? 'Perwakilan BU' : parsed.role === 'admin' ? 'Sys Admin' : 'Auditor Wasrik Madya'),
-          role_title: parsed.role_title || parsed.roleTitle || 'Auditor Wasrik Madya',
-          branch: parsed.branch || 'KC Cikarang',
-          nip: parsed.nip || '19940822 201802 1 002',
-        };
-      } catch {
-        return CURRENT_USER;
-      }
+    if (session.isAuthenticated && session.user) {
+      return {
+        ...session.user,
+        roleTitle: session.user.roleTitle || session.user.role_title || 'Auditor Wasrik Madya',
+        role_title: session.user.role_title || session.user.roleTitle || 'Auditor Wasrik Madya',
+        branch: session.user.branch || 'KC Cikarang',
+        nip: session.user.nip || '19940822 201802 1 002',
+      };
     }
     return CURRENT_USER;
   });
 
-  const [currentView, setCurrentView] = useState<string>('landing');
+  // Persistent Active View: Survives F5 Hard Refresh via Cookies & localStorage & URL Hash
+  const [currentView, setCurrentView] = useState<string>(() => {
+    // 1. Check URL Hash (e.g., wasrik.unsmadiun.id/#hermes)
+    const hash = window.location.hash.replace('#', '').trim();
+    const validViews = ['workbench', 'queue', 'dashboard', 'hermes', 'agents', 'uploader', 'synthetic', 'docs', 'login', 'landing'];
+    if (hash && validViews.includes(hash)) {
+      return hash;
+    }
+
+    // 2. If session is authenticated, restore the view they were working on!
+    if (session.isAuthenticated && session.view) {
+      if (validViews.includes(session.view) && session.view !== 'landing' && session.view !== 'login') {
+        return session.view;
+      }
+      return 'workbench';
+    }
+
+    // 3. Fallback to saved view or landing
+    const saved = localStorage.getItem('wasrik_active_view');
+    if (saved && validViews.includes(saved) && saved !== 'landing') {
+      return saved;
+    }
+
+    return 'landing';
+  });
+
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -54,26 +76,64 @@ export const App: React.FC = () => {
   const [isDatasheetOpen, setIsDatasheetOpen] = useState(false);
   const [isSanctionModalOpen, setIsSanctionModalOpen] = useState(false);
 
+  // Unified persistent navigation
+  const navigateTo = (view: string) => {
+    setCurrentView(view);
+    updateActiveView(view);
+    window.location.hash = view;
+    setIsMobileMenuOpen(false);
+  };
+
+  // Sync hash changes (e.g., browser back/forward buttons)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '').trim();
+      const validViews = ['workbench', 'queue', 'dashboard', 'hermes', 'agents', 'uploader', 'synthetic', 'docs', 'login', 'landing'];
+      if (hash && validViews.includes(hash)) {
+        setCurrentView(hash);
+        updateActiveView(hash);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   // Fetch live data from MySQL backend on mount
   useEffect(() => {
     const fetchBackendData = async () => {
       try {
         const empRes = await fetch('/api/v1/employers/priority-queue');
+        let fetchedEmployers: Employer[] = [];
         if (empRes.ok) {
           const empJson = await empRes.json();
           if (empJson.data && empJson.data.length > 0) {
-            setEmployers(empJson.data);
-            setSelectedEmployer(empJson.data[0]);
+            fetchedEmployers = empJson.data;
+            setEmployers(fetchedEmployers);
           }
         }
 
         const findRes = await fetch('/api/v1/findings');
+        let fetchedFindings: AgentFinding[] = [];
         if (findRes.ok) {
           const findJson = await findRes.json();
           if (findJson && findJson.length > 0) {
-            setFindings(findJson);
-            setActiveFinding(findJson[0]);
+            fetchedFindings = findJson;
+            setFindings(fetchedFindings);
           }
+        }
+
+        // Restore previously selected employer & finding if stored
+        const savedEmpId = localStorage.getItem('wasrik_employer_id');
+        if (savedEmpId && fetchedEmployers.length > 0) {
+          const matched = fetchedEmployers.find((e) => e.id === savedEmpId);
+          if (matched) {
+            setSelectedEmployer(matched);
+            const relFinding = (fetchedFindings.length > 0 ? fetchedFindings : findings).find((f) => f.employerId === matched.id);
+            if (relFinding) setActiveFinding(relFinding);
+          }
+        } else if (fetchedEmployers.length > 0) {
+          setSelectedEmployer(fetchedEmployers[0]);
+          if (fetchedFindings.length > 0) setActiveFinding(fetchedFindings[0]);
         }
       } catch (err) {
         console.log('Backend not reachable yet, using seeded cache:', err);
@@ -83,12 +143,14 @@ export const App: React.FC = () => {
     fetchBackendData();
   }, []);
 
-  // Navigate to finding from employer
+  // Navigate to finding from employer with persistent state
   const handleSelectEmployer = (emp: Employer) => {
     setSelectedEmployer(emp);
+    localStorage.setItem('wasrik_employer_id', emp.id);
     const related = findings.find((f) => f.employerId === emp.id) || findings[0];
     setActiveFinding(related);
-    setCurrentView('workbench');
+    localStorage.setItem('wasrik_finding_id', related.findingId);
+    navigateTo('workbench');
   };
 
   // Custom file upload loader
@@ -97,7 +159,7 @@ export const App: React.FC = () => {
     setFindings((prev) => [newFinding, ...prev]);
     setSelectedEmployer(newEmployer);
     setActiveFinding(newFinding);
-    setCurrentView('workbench');
+    navigateTo('workbench');
   };
 
   // Decision actions with MySQL persistence
@@ -194,10 +256,28 @@ export const App: React.FC = () => {
     return (
       <>
         <LandingPageView
-          onGoToLogin={() => setCurrentView('login')}
-          onGoToWorkbench={() => setCurrentView('workbench')}
-          onGoToQueue={() => setCurrentView('queue')}
-          onGoToUploader={() => setCurrentView('uploader')}
+          onGoToLogin={() => navigateTo('login')}
+          onGoToWorkbench={() => {
+            if (!session.isAuthenticated) {
+              saveSession(CURRENT_USER, 'wasrik_demo_session_token_2026', 'workbench');
+              setCurrentUser(CURRENT_USER);
+            }
+            navigateTo('workbench');
+          }}
+          onGoToQueue={() => {
+            if (!session.isAuthenticated) {
+              saveSession(CURRENT_USER, 'wasrik_demo_session_token_2026', 'queue');
+              setCurrentUser(CURRENT_USER);
+            }
+            navigateTo('queue');
+          }}
+          onGoToUploader={() => {
+            if (!session.isAuthenticated) {
+              saveSession(CURRENT_USER, 'wasrik_demo_session_token_2026', 'uploader');
+              setCurrentUser(CURRENT_USER);
+            }
+            navigateTo('uploader');
+          }}
           onOpenDatasheet={() => setIsDatasheetOpen(true)}
         />
         <DatasheetModal
@@ -214,9 +294,9 @@ export const App: React.FC = () => {
         <LoginView
           onLoginSuccess={(user) => {
             setCurrentUser(user);
-            setCurrentView('workbench');
+            navigateTo('workbench');
           }}
-          onBackToLanding={() => setCurrentView('landing')}
+          onBackToLanding={() => navigateTo('landing')}
         />
         <DatasheetModal
           isOpen={isDatasheetOpen}
@@ -232,16 +312,12 @@ export const App: React.FC = () => {
       {/* 100vh Sticky Responsive Sidebar */}
       <Sidebar
         currentView={currentView}
-        onNavigate={(view) => {
-          setCurrentView(view);
-          setIsMobileMenuOpen(false);
-        }}
+        onNavigate={(view) => navigateTo(view)}
         currentUser={currentUser}
         onOpenDatasheet={() => setIsDatasheetOpen(true)}
         onOpenLogout={() => {
-          localStorage.removeItem('wasrik_token');
-          setCurrentView('login');
-          setIsMobileMenuOpen(false);
+          clearSession();
+          navigateTo('landing');
         }}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -249,90 +325,89 @@ export const App: React.FC = () => {
         onCloseMobile={() => setIsMobileMenuOpen(false)}
       />
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
-          {/* Top Header */}
-          <TopHeader
-            currentUser={currentUser}
-            currentView={currentView}
-            onNavigate={(view) => {
-              setCurrentView(view);
-              setIsMobileMenuOpen(false);
-            }}
-            onOpenDatasheet={() => setIsDatasheetOpen(true)}
-            onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
-            onSwitchRole={(role) => {
-              setCurrentUser((prev) => ({
-                ...prev,
-                role,
-                roleTitle:
-                  role === 'auditor'
-                    ? 'Auditor Wasrik Madya'
-                    : role === 'supervisor'
-                    ? 'Kepala Kantor Cabang'
-                    : role === 'auditee'
-                    ? 'HR Director (Auditee)'
-                    : 'System Administrator',
-              }));
-            }}
-          />
-
-          {/* Dynamic Workspace Body with smooth tab transitions */}
-          <main key={currentView} className="flex-1 flex flex-col overflow-hidden animate-fade-in">
-            {currentView === 'queue' && (
-              <PriorityQueueView
-                employers={employers}
-                onSelectEmployer={handleSelectEmployer}
-                selectedEmployerId={selectedEmployer.id}
-              />
-            )}
-
-            {currentView === 'workbench' && (
-              <DualPaneWorkbench
-                finding={activeFinding}
-                employer={selectedEmployer}
-                onApprove={handleApproveFinding}
-                onOverride={handleOverrideFinding}
-                onReject={handleRejectFinding}
-                onOpenSanctionModal={() => setIsSanctionModalOpen(true)}
-              />
-            )}
-
-            {currentView === 'dashboard' && <DashboardView />}
-
-            {currentView === 'uploader' && (
-              <RealFileUploader onLoadCustomAudit={handleLoadCustomAudit} />
-            )}
-
-            {currentView === 'hermes' && <HermesConsoleView />}
-
-            {currentView === 'agents' && <MultiAgentLiveRunner />}
-
-            {currentView === 'synthetic' && <SyntheticDataGenerator />}
-
-            {currentView === 'docs' && <ArchitectureDocsView />}
-          </main>
-
-          {/* Official Footer */}
-          <Footer
-            onOpenDatasheet={() => setIsDatasheetOpen(true)}
-            onOpenDocs={() => setCurrentView('docs')}
-          />
-        </div>
-
-        {/* Global Modals */}
-        <DatasheetModal
-          isOpen={isDatasheetOpen}
-          onClose={() => setIsDatasheetOpen(false)}
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
+        {/* Top Header */}
+        <TopHeader
+          currentUser={currentUser}
+          currentView={currentView}
+          onNavigate={(view) => navigateTo(view)}
+          onOpenDatasheet={() => setIsDatasheetOpen(true)}
+          onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
+          onSwitchRole={(role) => {
+            const updated: UserProfile = {
+              ...currentUser,
+              role,
+              roleTitle:
+                role === 'auditor'
+                  ? 'Auditor Wasrik Madya'
+                  : role === 'supervisor'
+                  ? 'Kepala Kantor Cabang'
+                  : role === 'auditee'
+                  ? 'HR Director (Auditee)'
+                  : 'System Administrator',
+            };
+            setCurrentUser(updated);
+            saveSession(updated, localStorage.getItem('wasrik_token') || 'token', currentView);
+          }}
         />
 
-        <SanctionLetterModal
-          isOpen={isSanctionModalOpen}
-          onClose={() => setIsSanctionModalOpen(false)}
-          finding={activeFinding}
-          employer={selectedEmployer}
+        {/* Dynamic Workspace Body with smooth tab transitions */}
+        <main key={currentView} className="flex-1 flex flex-col overflow-hidden animate-fade-in">
+          {currentView === 'queue' && (
+            <PriorityQueueView
+              employers={employers}
+              onSelectEmployer={handleSelectEmployer}
+              selectedEmployerId={selectedEmployer.id}
+            />
+          )}
+
+          {currentView === 'workbench' && (
+            <DualPaneWorkbench
+              finding={activeFinding}
+              employer={selectedEmployer}
+              onApprove={handleApproveFinding}
+              onOverride={handleOverrideFinding}
+              onReject={handleRejectFinding}
+              onOpenSanctionModal={() => setIsSanctionModalOpen(true)}
+            />
+          )}
+
+          {currentView === 'dashboard' && <DashboardView />}
+
+          {currentView === 'uploader' && (
+            <RealFileUploader onLoadCustomAudit={handleLoadCustomAudit} />
+          )}
+
+          {currentView === 'hermes' && <HermesConsoleView />}
+
+          {currentView === 'agents' && <MultiAgentLiveRunner />}
+
+          {currentView === 'synthetic' && <SyntheticDataGenerator />}
+
+          {currentView === 'docs' && <ArchitectureDocsView />}
+        </main>
+
+        {/* Official Footer */}
+        <Footer
+          onOpenDatasheet={() => setIsDatasheetOpen(true)}
+          onOpenDocs={() => navigateTo('docs')}
         />
       </div>
-    );
-  };
+
+      {/* Global Modals */}
+      <DatasheetModal
+        isOpen={isDatasheetOpen}
+        onClose={() => setIsDatasheetOpen(false)}
+      />
+
+      <SanctionLetterModal
+        isOpen={isSanctionModalOpen}
+        onClose={() => setIsSanctionModalOpen(false)}
+        finding={activeFinding}
+        employer={selectedEmployer}
+      />
+    </div>
+  );
+};
 export default App;

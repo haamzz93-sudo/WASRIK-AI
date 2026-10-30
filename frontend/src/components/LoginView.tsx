@@ -3,6 +3,7 @@ import { WasrikLogo } from './WasrikLogo';
 import { UserProfile, UserRole } from '../types/wasrik';
 import { useTheme } from '../context/ThemeContext';
 import { IconSun, IconMoon } from './Icons';
+import { saveSession } from '../utils/session';
 
 interface LoginViewProps {
   onLoginSuccess: (user: UserProfile) => void;
@@ -67,8 +68,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onBackToLa
         roleTitle: data.user.roleTitle || data.user.role_title || 'Auditor Wasrik Madya',
         role_title: data.user.role_title || data.user.roleTitle || 'Auditor Wasrik Madya',
       };
-      localStorage.setItem('wasrik_token', data.access_token);
-      localStorage.setItem('wasrik_user', JSON.stringify(normalizedUser));
+      saveSession(normalizedUser, data.access_token, 'workbench');
       onLoginSuccess(normalizedUser);
     } catch (err: any) {
       console.warn('Backend login fallback:', err.message);
@@ -82,6 +82,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onBackToLa
           branch: 'KC Cikarang',
           nip: '19940822 201802 1 002',
         };
+        saveSession(mockUser, 'mock_token_wasrik_2026', 'workbench');
         onLoginSuccess(mockUser);
       } else {
         setErrorMessage(err.message || 'Koneksi ke backend gagal atau kata sandi keliru.');
@@ -126,8 +127,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onBackToLa
         roleTitle: data.user.roleTitle || data.user.role_title || 'Auditor Wasrik Madya',
         role_title: data.user.role_title || data.user.roleTitle || 'Auditor Wasrik Madya',
       };
-      localStorage.setItem('wasrik_token', data.access_token);
-      localStorage.setItem('wasrik_user', JSON.stringify(normalizedUser));
+      saveSession(normalizedUser, data.access_token, 'workbench');
       setTimeout(() => {
         onLoginSuccess(normalizedUser);
       }, 1000);
