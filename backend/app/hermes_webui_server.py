@@ -305,7 +305,7 @@ async def chat_with_hermes(req: ChatRequest):
             client = AsyncOpenAI(
                 api_key=api_key or "dummy-ollama-key",
                 base_url=base_url,
-                timeout=120.0
+                timeout=18.0  # Batas 18 detik agar tidak terkena 504 Gateway Timeout Nginx
             )
             completion = await client.chat.completions.create(
                 model=model,
@@ -314,7 +314,7 @@ async def chat_with_hermes(req: ChatRequest):
                     {"role": "user", "content": query_raw}
                 ],
                 temperature=0.3,
-                max_tokens=1500
+                max_tokens=1000
             )
 
             raw_reply = completion.choices[0].message.content or ""
@@ -337,15 +337,9 @@ async def chat_with_hermes(req: ChatRequest):
                 "timestamp": datetime.datetime.now().isoformat()
             }
         except Exception as llm_err:
-            print(f"[Hermes LLM Call Error]: {llm_err}")
-            return {
-                "reply": f"⚠️ **Inferensi Neural Terkendala**: Tidak dapat menghubungi model `{model}` pada `{CONFIG['provider']}`.\n\n**Detail Error**: `{str(llm_err)}`.\n\n*Saran*: Periksa apakah Ollama aktif (`ollama list`), atau ganti ke model yang lebih ringan seperti `llama3.2:3b` pada tab Provider & API Key.",
-                "thought": f"Gagal mengeksekusi LLM call ke {base_url}:\n{str(llm_err)}",
-                "model": model,
-                "provider": CONFIG["provider"],
-                "engine_mode": "RULE_ENGINE",
-                "timestamp": datetime.datetime.now().isoformat()
-            }
+            print(f"[Hermes LLM Timeout/Error - Auto Fallback to Database Rule Engine]: {llm_err}")
+            # Tidak mengembalikan error 504 / gagal! Langsung fall-through ke Database Rule Engine di bawah agar respons selalu sukses!
+
 
     # -------------------------------------------------------------------------
     # 2. DETERMINISTIC DATABASE AGENT ENGINE (When no API key is provided)
