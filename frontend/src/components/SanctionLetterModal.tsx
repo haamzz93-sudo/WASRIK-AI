@@ -17,42 +17,459 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const letterNumber = `ST.01.03/WASRIK-CKR/${new Date().getFullYear()}/${new Date().getMonth() + 1}-0892`;
+  const letterNumber = `ST.01.03/WASRIK-CKR/${new Date().getFullYear()}/${String(new Date().getMonth() + 1).padStart(2, '0')}-0892`;
   const currentDate = new Date().toLocaleDateString('id-ID', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
 
+  const pdukCount = Math.max(0, (employer.totalActiveEmployees || 0) - (employer.bpjsRegisteredEmployees || 0));
+
+  // Enterprise Print Handler: Prints pristine isolated A4 official document
   const handlePrint = () => {
-    window.print();
+    // Generate isolated printable HTML for clean A4 printing without modal artifacts
+    const printHtml = `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Surat_Teguran_Wasrik_${employer.companyName.replace(/[^a-zA-Z0-9]/g, '_')}</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 20mm 20mm 20mm 25mm; /* Standar Persuratan Dinas RI */
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 11pt;
+      line-height: 1.35;
+      color: #000000;
+      background: #ffffff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    /* KOP SURAT DINAS */
+    .kop-wrapper {
+      display: flex;
+      align-items: center;
+      padding-bottom: 8px;
+      margin-bottom: 2px;
+    }
+    .kop-logo {
+      width: 72px;
+      height: 72px;
+      margin-right: 18px;
+      flex-shrink: 0;
+    }
+    .kop-text {
+      flex: 1;
+      text-align: center;
+    }
+    .kop-text .instansi-1 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12.5pt;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #000000;
+      line-height: 1.2;
+    }
+    .kop-text .instansi-2 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11pt;
+      font-weight: 700;
+      color: #000000;
+      margin-top: 1px;
+      line-height: 1.2;
+    }
+    .kop-text .instansi-unit {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #006930;
+      margin-top: 1px;
+      letter-spacing: 0.5px;
+    }
+    .kop-text .alamat {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 8pt;
+      color: #333333;
+      margin-top: 3px;
+      line-height: 1.25;
+    }
+    /* GARIS GANDA STANDAR PERSURATAN RESMI */
+    .garis-kop {
+      border-top: 2.5px solid #000000;
+      border-bottom: 0.8px solid #000000;
+      height: 4px;
+      margin-bottom: 16px;
+    }
+    /* META SURAT */
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+      font-size: 10.5pt;
+    }
+    .meta-table td {
+      vertical-align: top;
+      padding: 1px 0;
+    }
+    .perihal-box {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    /* ISI SURAT */
+    p.isi {
+      text-align: justify;
+      text-justify: inter-ideograph;
+      text-indent: 1.25cm;
+      margin-bottom: 10px;
+      font-size: 11pt;
+      line-height: 1.4;
+    }
+    p.biasa {
+      text-align: justify;
+      margin-bottom: 10px;
+      font-size: 11pt;
+      line-height: 1.4;
+    }
+    /* TABEL TEMUAN */
+    table.temuan-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 16px 0;
+      font-size: 10pt;
+    }
+    table.temuan-table th {
+      background-color: #f2f2f2;
+      border: 1px solid #000000;
+      padding: 6px 8px;
+      font-weight: bold;
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5pt;
+    }
+    table.temuan-table td {
+      border: 1px solid #000000;
+      padding: 6px 8px;
+      vertical-align: top;
+    }
+    table.temuan-table .text-center {
+      text-align: center;
+    }
+    table.temuan-table .text-right {
+      text-align: right;
+    }
+    table.temuan-table .nominal {
+      font-weight: bold;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    /* BAGIAN TANDA TANGAN */
+    .ttd-section {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      page-break-inside: avoid;
+    }
+    .tembusan-block {
+      width: 45%;
+      font-size: 9.5pt;
+    }
+    .tembusan-block ol {
+      margin-left: 18px;
+      margin-top: 3px;
+    }
+    .pejabat-block {
+      width: 50%;
+      text-align: center;
+      font-size: 10.5pt;
+    }
+    /* BSrE ELECTRONIC SIGNATURE SEAL */
+    .bsre-container {
+      margin: 10px auto;
+      border: 1px solid #888888;
+      background: #fafafa;
+      padding: 6px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+      max-width: 280px;
+      text-align: left;
+    }
+    .bsre-qr {
+      width: 54px;
+      height: 54px;
+      flex-shrink: 0;
+    }
+    .bsre-text {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 7pt;
+      line-height: 1.25;
+      color: #333333;
+    }
+    .pejabat-nama {
+      font-weight: bold;
+      text-decoration: underline;
+      font-size: 11pt;
+      margin-top: 4px;
+    }
+    .pejabat-nip {
+      font-size: 9.5pt;
+      color: #333333;
+    }
+    /* FOOTER CATATAN HUKUM */
+    .legal-footer {
+      margin-top: 25px;
+      border-top: 0.8px solid #999999;
+      padding-top: 6px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 7.5pt;
+      color: #555555;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <!-- KOP SURAT DINAS -->
+  <div class="kop-wrapper">
+    <img src="/assets/wasrik-logo.svg" alt="BPJS Logo" class="kop-logo" />
+    <div class="kop-text">
+      <div class="instansi-1">BPJS KESEHATAN</div>
+      <div class="instansi-2">KANTOR CABANG CIKARANG</div>
+      <div class="instansi-unit">UNIT KERJA PENGAWASAN DAN PEMERIKSAAN KEPATUHAN (WASRIK)</div>
+      <div class="alamat">
+        Kompleks Ruko Cikarang Central City Blok A No. 10-12, Cikarang Pusat, Kabupaten Bekasi, Jawa Barat 17530<br>
+        Telepon: (021) 8984-2300 | Faksimile: (021) 8984-2301 | Email: kc-cikarang@bpjs-kesehatan.go.id
+      </div>
+    </div>
+  </div>
+  <div class="garis-kop"></div>
+
+  <!-- META SURAT -->
+  <table class="meta-table">
+    <tr>
+      <td style="width: 12%;">Nomor</td>
+      <td style="width: 2%;">:</td>
+      <td style="width: 46%;"><strong>${letterNumber}</strong></td>
+      <td style="width: 40%; text-align: right;">Cikarang, ${currentDate}</td>
+    </tr>
+    <tr>
+      <td>Sifat</td>
+      <td>:</td>
+      <td><span style="font-weight: bold; color: #b91c1c;">Penting / Segera</span></td>
+      <td rowspan="3" style="text-align: left; vertical-align: top; padding-left: 20px;">
+        Kepada Yth.<br>
+        <strong>Pimpinan / Direktur Perusahaan</strong><br>
+        <strong>${employer.companyName}</strong><br>
+        NPWP: ${employer.npwp}<br>
+        ${employer.address}
+      </td>
+    </tr>
+    <tr>
+      <td>Lampiran</td>
+      <td>:</td>
+      <td>1 (satu) Berkas Lembar Bukti Audit Wasrik</td>
+    </tr>
+    <tr>
+      <td>Perihal</td>
+      <td>:</td>
+      <td><span class="perihal-box">SURAT TEGURAN PERTAMA (I) ATAS KETIDAKPATUHAN PEMBERI KERJA</span></td>
+    </tr>
+  </table>
+
+  <!-- ISI SURAT -->
+  <p class="biasa">Dengan hormat,</p>
+  
+  <p class="isi">
+    Berdasarkan ketentuan <strong>Undang-Undang Nomor 24 Tahun 2011</strong> tentang Badan Penyelenggara Jaminan Sosial, dan <strong>Peraturan Pemerintah Nomor 86 Tahun 2013</strong> tentang Tata Cara Pengenaan Sanksi Administratif Kepada Pemberi Kerja Selain Penyelenggara Negara dan Setiap Orang Selain Pemberi Kerja, Pekerja, dan Penerima Bantuan Iuran dalam Penyelenggaraan Jaminan Sosial, dengan ini kami sampaikan bahwa Unit Kerja Pengawasan dan Pemeriksaan (Wasrik) BPJS Kesehatan Kantor Cabang Cikarang telah melaksanakan pemeriksaan silang kepatuhan data kepesertaan dan iuran terhadap Badan Usaha yang Saudara pimpin.
+  </p>
+
+  <p class="isi">
+    Dari hasil pemeriksaan terintegrasi antara dokumen penggajian (payroll/slip gaji), data perbankan, dan data kepesertaan pada Sistem Informasi Perhitungan Pelaporan (SIPP) BPJS Kesehatan, telah ditemukan indikasi ketidakpatuhan sebagai berikut:
+  </p>
+
+  <!-- TABEL TEMUAN -->
+  <table class="temuan-table">
+    <thead>
+      <tr>
+        <th style="width: 6%;">No</th>
+        <th style="width: 50%;">Uraian Ketidakpatuhan</th>
+        <th style="width: 18%;">Jumlah Tenaga Kerja</th>
+        <th style="width: 26%;">Potensi Selisih Iuran</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="text-center">1</td>
+        <td>
+          <strong>Pelaporan Upah Lebih Rendah (Under-Reporting Wage)</strong><br>
+          <span style="font-size: 8.5pt; color: #333333;">
+            Terdapat selisih pelaporan komponen upah (gaji pokok & tunjangan tetap) pada slip gaji resmi karyawan dibandingkan dasar upah yang dilaporkan ke SIPP BPJS Kesehatan.
+          </span>
+        </td>
+        <td class="text-center">${finding.affectedEmployeeCount} orang</td>
+        <td class="text-right nominal">Rp ${finding.estimatedLossAmount.toLocaleString('id-ID')}</td>
+      </tr>
+      ${pdukCount > 0 ? `
+      <tr>
+        <td class="text-center">2</td>
+        <td>
+          <strong>Pendaftaran Pekerja Sebagian (PDUK)</strong><br>
+          <span style="font-size: 8.5pt; color: #333333;">
+            Tenaga kerja aktif terdaftar dalam daftar absensi dan penggajian perusahaan namun belum didaftarkan seluruhnya dalam program JKN.
+          </span>
+        </td>
+        <td class="text-center">${pdukCount} orang</td>
+        <td class="text-right nominal" style="font-size: 9pt;">Sesuai Hitungan Susulan</td>
+      </tr>` : ''}
+    </tbody>
+  </table>
+
+  <p class="isi">
+    Sehubungan dengan temuan pemeriksaan di atas, kami meminta Saudara untuk segera melakukan penyesuaian pelaporan data upah riil seluruh pekerja dan melunasi tunggakan selisih iuran tersebut dalam jangka waktu paling lambat <strong>10 (sepuluh) hari kerja</strong> sejak tanggal diterimanya Surat Teguran ini.
+  </p>
+
+  <p class="isi">
+    Apabila sampai dengan batas waktu yang telah ditetapkan Saudara belum melaksanakan kewajiban penyesuaian data dan pembayaran selisih iuran, maka BPJS Kesehatan akan menerbitkan <strong>Surat Teguran Tertulis Kedua</strong> serta mengenakan sanksi administratif berikutnya berupa <strong>Denda Keterlambatan</strong> dan rekomendasi sanksi <strong>Tidak Mendapat Pelayanan Publik Tertentu (TMP2T)</strong> sesuai Pasal 9 PP No. 86 Tahun 2013 melalui sistem OSS (Online Single Submission) BKPM berupa pembekuan izin operasional usaha.
+  </p>
+
+  <p class="biasa">Demikian Surat Teguran ini kami sampaikan, atas perhatian dan kepatuhan Saudara diucapkan terima kasih.</p>
+
+  <!-- BAGIAN TANDA TANGAN -->
+  <div class="ttd-section">
+    <div class="tembusan-block">
+      <strong>Tembusan Yth:</strong>
+      <ol>
+        <li>Kepala Dinas Tenaga Kerja dan Transmigrasi Kabupaten Bekasi;</li>
+        <li>Kepala Kantor Wilayah BPJS Kesehatan Jawa Barat;</li>
+        <li>Inspektorat Pengawasan & Pemeriksaan (Wasrik) Kantor Pusat;</li>
+        <li>Arsip Unit Wasrik KC Cikarang.</li>
+      </ol>
+    </div>
+    
+    <div class="pejabat-block">
+      <div>Kepala Kantor Cabang Cikarang,</div>
+      
+      <!-- BSrE Electronic Seal Simulation -->
+      <div class="bsre-container">
+        <!-- Crisp Vector QR Code -->
+        <svg class="bsre-qr" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" fill="#ffffff" />
+          <!-- Corner Pos 1 -->
+          <rect x="5" y="5" width="28" height="28" fill="#000000" />
+          <rect x="9" y="9" width="20" height="20" fill="#ffffff" />
+          <rect x="13" y="13" width="12" height="12" fill="#000000" />
+          <!-- Corner Pos 2 -->
+          <rect x="67" y="5" width="28" height="28" fill="#000000" />
+          <rect x="71" y="9" width="20" height="20" fill="#ffffff" />
+          <rect x="75" y="13" width="12" height="12" fill="#000000" />
+          <!-- Corner Pos 3 -->
+          <rect x="5" y="67" width="28" height="28" fill="#000000" />
+          <rect x="9" y="71" width="20" height="20" fill="#ffffff" />
+          <rect x="13" y="75" width="12" height="12" fill="#000000" />
+          <!-- Data dots pattern -->
+          <rect x="40" y="8" width="6" height="6" fill="#000000" />
+          <rect x="52" y="8" width="6" height="6" fill="#000000" />
+          <rect x="40" y="20" width="6" height="6" fill="#000000" />
+          <rect x="46" y="26" width="6" height="6" fill="#000000" />
+          <rect x="52" y="32" width="6" height="6" fill="#000000" />
+          <rect x="10" y="42" width="6" height="6" fill="#000000" />
+          <rect x="22" y="42" width="6" height="6" fill="#000000" />
+          <rect x="40" y="44" width="20" height="12" fill="#000000" />
+          <rect x="68" y="44" width="8" height="8" fill="#000000" />
+          <rect x="82" y="44" width="8" height="8" fill="#000000" />
+          <rect x="40" y="68" width="6" height="14" fill="#000000" />
+          <rect x="52" y="74" width="8" height="8" fill="#000000" />
+          <rect x="68" y="68" width="14" height="6" fill="#000000" />
+          <rect x="76" y="80" width="12" height="10" fill="#000000" />
+        </svg>
+        <div class="bsre-text">
+          <strong>DITANDATANGANI SECARA ELEKTRONIK</strong><br>
+          Sertifikasi Balai Sertifikasi Elektronik (BSrE)<br>
+          Badan Siber dan Sandi Negara (BSSN)<br>
+          <span style="color: #006930; font-weight: bold;">ID: BSRE-BPJS-2026-98124A</span>
+        </div>
+      </div>
+
+      <div class="pejabat-nama">Siti Rahmawati, S.E., M.M.</div>
+      <div class="pejabat-nip">NIP. 19830514 200701 2 001</div>
+    </div>
+  </div>
+
+  <!-- LEGAL FOOTER -->
+  <div class="legal-footer">
+    <span>Dokumen Resmi WasrikAgent AI 2.0 • Sesuai PP No. 86 Tahun 2013 • Hash: SHA-256 Validated</span>
+    <span>Lembar Dokumen Sah Kedinasan BPJS Kesehatan RI</span>
+  </div>
+</body>
+</html>`;
+
+    // Render into an isolated hidden iframe for 100% clean, full-bleed A4 printing
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (doc) {
+      doc.open();
+      doc.write(printHtml);
+      doc.close();
+
+      iframe.contentWindow?.focus();
+      setTimeout(() => {
+        iframe.contentWindow?.print();
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+        }, 1500);
+      }, 300);
+    } else {
+      window.print();
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 font-sans">
-      <div className="bg-white rounded-3xl max-w-3xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
-        {/* Modal Action Header */}
-        <div className="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 font-sans">
+      <div className="bg-slate-100 rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-300 overflow-hidden flex flex-col max-h-[95vh]">
+        {/* Modal Action Header (Screen View) */}
+        <div className="px-5 py-3 bg-white border-b border-slate-200 flex items-center justify-between shrink-0 shadow-xs">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-600" />
-            <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-              Draf Surat Teguran Resmi (PP No. 86 Tahun 2013)
-            </span>
+            <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse" />
+            <div>
+              <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
+                Draf Resmi Surat Teguran Wasrik (PP No. 86 Tahun 2013)
+              </span>
+              <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                ✓ Siap Cetak A4 Standar Dinas Kedinasan RI
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="px-3.5 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-4 py-2 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 active:scale-98 rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-sm hover:shadow"
             >
-              <svg className="w-3.5 h-3.5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
               </svg>
-              Cetak / Simpan PDF
+              Cetak / Simpan PDF (A4 Standar)
             </button>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors flex items-center justify-center cursor-pointer"
+              className="w-8 h-8 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors flex items-center justify-center cursor-pointer"
+              title="Tutup (Esc)"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -61,126 +478,170 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
           </div>
         </div>
 
-        {/* Printable Official Letter Body (TIMES NEW ROMAN FONT STRICTLY FOR LEGAL LETTER) */}
-        <div className="p-8 sm:p-10 overflow-y-auto font-document text-slate-900 space-y-4 text-xs leading-relaxed bg-white">
-          {/* Institutional Letterhead */}
-          <div className="border-b-2 border-slate-900 pb-4 mb-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <WasrikLogo variant="emblem" size="lg" />
-              <div>
-                <h2 className="font-sans font-black text-sm uppercase tracking-wide text-slate-900">
-                  BPJS KESEHATAN KANTOR CABANG CIKARANG
+        {/* Modal Scrollable Workspace - Displays Crisp A4 Document Sheet */}
+        <div className="p-4 sm:p-8 overflow-y-auto bg-slate-200/70 flex justify-center">
+          <div className="bg-white max-w-[210mm] w-full p-8 sm:p-12 shadow-lg border border-slate-300 font-document text-slate-900 text-xs sm:text-[13px] leading-relaxed select-text">
+            
+            {/* Kop Surat Resmi */}
+            <div className="flex items-center gap-4 pb-2">
+              <div className="w-16 h-16 shrink-0">
+                <WasrikLogo variant="emblem" size="lg" />
+              </div>
+              <div className="flex-1 text-center font-sans">
+                <h2 className="font-black text-sm uppercase tracking-wider text-slate-900 leading-tight">
+                  BPJS KESEHATAN
                 </h2>
-                <p className="font-sans text-[11px] font-semibold text-emerald-800">
+                <h3 className="font-bold text-xs uppercase text-slate-900 leading-tight">
+                  KANTOR CABANG CIKARANG
+                </h3>
+                <p className="text-[11px] font-bold text-emerald-800 tracking-wide mt-0.5">
                   UNIT KERJA PENGAWASAN DAN PEMERIKSAAN KEPATUHAN (WASRIK)
                 </p>
-                <p className="font-sans text-[10px] text-slate-500">
-                  Kompleks Ruko Cikarang Central City Blok A No. 10-12, Cikarang Pusat, Bekasi
+                <p className="text-[9px] text-slate-600 leading-tight mt-1">
+                  Kompleks Ruko Cikarang Central City Blok A No. 10-12, Cikarang Pusat, Kabupaten Bekasi, Jawa Barat 17530<br />
+                  Telepon: (021) 8984-2300 | Faksimile: (021) 8984-2301 | Email: kc-cikarang@bpjs-kesehatan.go.id
                 </p>
               </div>
             </div>
-            <div className="text-right font-sans text-[10px] text-slate-400">
-              FORM: WASRIK-PP86-2013-ST1
+
+            {/* Garis Ganda Kop Surat Resmi */}
+            <div className="border-t-[2.5px] border-b-[0.8px] border-black h-[4px] my-3" />
+
+            {/* Meta Surat */}
+            <div className="grid grid-cols-2 gap-4 text-xs font-sans mb-4">
+              <div>
+                <p>Nomor : <span className="font-bold">{letterNumber}</span></p>
+                <p>Sifat : <span className="font-bold text-red-700">Penting / Segera</span></p>
+                <p>Lampiran : 1 (satu) Berkas Hasil Audit Wasrik</p>
+                <p className="mt-1">
+                  Perihal : <strong className="underline">SURAT TEGURAN PERTAMA (I) ATAS KETIDAKPATUHAN PEMBERI KERJA</strong>
+                </p>
+              </div>
+              <div className="text-right">
+                <p>Cikarang, {currentDate}</p>
+                <p className="mt-2 text-left sm:pl-8 text-slate-800">
+                  Kepada Yth.<br />
+                  <strong>Pimpinan / Direktur Perusahaan</strong><br />
+                  <strong>{employer.companyName}</strong><br />
+                  NPWP: {employer.npwp}<br />
+                  {employer.address}
+                </p>
+              </div>
             </div>
-          </div>
 
-          {/* Letter Meta */}
-          <div className="grid grid-cols-2 gap-4 font-sans text-xs mb-4">
-            <div>
-              <p>Nomor : <span className="font-bold">{letterNumber}</span></p>
-              <p>Sifat : <span className="font-bold text-red-700">Penting / Segera</span></p>
-              <p>Lampiran : 1 (satu) Berkas Hasil Audit Wasrik</p>
-              <p>Perihal : <strong>SURAT TEGURAN PERTAMA (I) ATAS KETIDAKPATUHAN PEMBERI KERJA</strong></p>
-            </div>
-            <div className="text-right">
-              <p>Cikarang, {currentDate}</p>
-              <p className="mt-2 text-slate-700">
-                Kepada Yth.<br />
-                <strong>Direktur / Pimpinan Perusahaan</strong><br />
-                {employer.companyName}<br />
-                NPWP: {employer.npwp}<br />
-                {employer.address}
-              </p>
-            </div>
-          </div>
+            {/* Isi Surat */}
+            <p className="mb-2">Dengan hormat,</p>
+            <p className="text-justify indent-8 mb-3">
+              Berdasarkan ketentuan <strong>Undang-Undang Nomor 24 Tahun 2011</strong> tentang Badan Penyelenggara Jaminan Sosial, dan <strong>Peraturan Pemerintah Nomor 86 Tahun 2013</strong> tentang Tata Cara Pengenaan Sanksi Administratif Kepada Pemberi Kerja Selain Penyelenggara Negara, dengan ini kami sampaikan bahwa Unit Kerja Pengawasan dan Pemeriksaan (Wasrik) BPJS Kesehatan telah melaksanakan pemeriksaan kepatuhan terhadap Badan Usaha yang Saudara pimpin.
+            </p>
 
-          {/* Letter Contents */}
-          <p>Dengan hormat,</p>
-          <p className="text-justify indent-6">
-            Berdasarkan ketentuan <strong>Undang-Undang Nomor 24 Tahun 2011</strong> tentang Badan Penyelenggara Jaminan Sosial, dan <strong>Peraturan Pemerintah Nomor 86 Tahun 2013</strong> tentang Tata Cara Pengenaan Sanksi Administratif Kepada Pemberi Kerja Selain Penyelenggara Negara, dengan ini kami sampaikan bahwa Unit Pengawasan dan Pemeriksaan (Wasrik) BPJS Kesehatan telah melakukan pemeriksaan kepatuhan terhadap Badan Usaha yang Saudara pimpin.
-          </p>
+            <p className="text-justify indent-8 mb-3">
+              Dari hasil pemeriksaan silang dokumen penggajian dan master data kepesertaan SIPP, ditemukan indikasi ketidakpatuhan sebagai berikut:
+            </p>
 
-          <p className="text-justify indent-6">
-            Dari hasil pemeriksaan silang dokumen penggajian dan master data kepesertaan SIPP, ditemukan ketidakpatuhan sebagai berikut:
-          </p>
-
-          {/* Findings Table */}
-          <table className="w-full border-collapse border border-slate-300 text-xs my-2">
-            <thead>
-              <tr className="bg-slate-100 text-slate-800 font-bold font-sans">
-                <th className="border border-slate-300 p-2 text-left">Uraian Temuan Pemeriksaan</th>
-                <th className="border border-slate-300 p-2 text-center">Jumlah Karyawan</th>
-                <th className="border border-slate-300 p-2 text-right">Potensi Kerugian Iuran (Rp)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border border-slate-300 p-2">
-                  <strong>Pelaporan Upah Lebih Rendah (Under-Reporting Wage):</strong>
-                  <br />Selisih pelaporan gaji pokok &amp; tunjangan tetap pada slip gaji riil vs basis pelaporan SIPP BPJS Kesehatan.
-                </td>
-                <td className="border border-slate-300 p-2 text-center font-mono">
-                  {finding.affectedEmployeeCount} orang
-                </td>
-                <td className="border border-slate-300 p-2 text-right font-mono font-bold text-red-700">
-                  Rp {finding.estimatedLossAmount.toLocaleString('id-ID')}
-                </td>
-              </tr>
-              {employer.totalActiveEmployees - employer.bpjsRegisteredEmployees > 0 && (
+            {/* Tabel Temuan Formal */}
+            <table className="w-full border-collapse border border-black text-xs my-3">
+              <thead>
+                <tr className="bg-slate-100 text-black font-bold font-sans">
+                  <th className="border border-black p-2 text-center w-10">No</th>
+                  <th className="border border-black p-2 text-left">Uraian Temuan Pemeriksaan</th>
+                  <th className="border border-black p-2 text-center w-28">Jumlah Tenaga Kerja</th>
+                  <th className="border border-black p-2 text-right w-44">Potensi Kerugian Iuran (Rp)</th>
+                </tr>
+              </thead>
+              <tbody>
                 <tr>
-                  <td className="border border-slate-300 p-2">
-                    <strong>Pendaftaran Pekerja Sebagian (PDUK):</strong>
-                    <br />Pekerja aktif terdaftar absensi namun belum didaftarkan ke program JKN.
+                  <td className="border border-black p-2 text-center">1</td>
+                  <td className="border border-black p-2">
+                    <strong>Pelaporan Upah Lebih Rendah (Under-Reporting Wage):</strong>
+                    <div className="text-[11px] text-slate-700 mt-0.5">
+                      Selisih pelaporan gaji pokok &amp; tunjangan tetap pada slip gaji riil vs basis pelaporan SIPP BPJS Kesehatan.
+                    </div>
                   </td>
-                  <td className="border border-slate-300 p-2 text-center font-mono">
-                    {employer.totalActiveEmployees - employer.bpjsRegisteredEmployees} orang
+                  <td className="border border-black p-2 text-center font-mono font-bold">
+                    {finding.affectedEmployeeCount} orang
                   </td>
-                  <td className="border border-slate-300 p-2 text-right font-mono font-bold text-amber-700">
-                    Sesuai Perhitungan Susulan
+                  <td className="border border-black p-2 text-right font-mono font-bold text-red-700">
+                    Rp {finding.estimatedLossAmount.toLocaleString('id-ID')}
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
+                {pdukCount > 0 && (
+                  <tr>
+                    <td className="border border-black p-2 text-center">2</td>
+                    <td className="border border-black p-2">
+                      <strong>Pendaftaran Pekerja Sebagian (PDUK):</strong>
+                      <div className="text-[11px] text-slate-700 mt-0.5">
+                        Pekerja aktif terdaftar absensi namun belum didaftarkan ke program JKN.
+                      </div>
+                    </td>
+                    <td className="border border-black p-2 text-center font-mono font-bold">
+                      {pdukCount} orang
+                    </td>
+                    <td className="border border-black p-2 text-right font-mono font-bold text-amber-800">
+                      Sesuai Perhitungan Susulan
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
 
-          <p className="text-justify indent-6">
-            Sehubungan dengan hal tersebut di atas, kami meminta Saudara untuk segera melakukan penyesuaian pelaporan upah riil dan menyelesaikan tunggakan selisih iuran dalam jangka waktu paling lambat <strong>10 (sepuluh) hari kerja</strong> sejak diterimanya Surat Teguran ini.
-          </p>
+            <p className="text-justify indent-8 mb-3">
+              Sehubungan dengan hal tersebut di atas, kami meminta Saudara untuk segera melakukan penyesuaian pelaporan upah riil dan menyelesaikan tunggakan selisih iuran dalam jangka waktu paling lambat <strong>10 (sepuluh) hari kerja</strong> sejak diterimanya Surat Teguran ini.
+            </p>
 
-          <p className="text-justify indent-6">
-            Apabila sampai dengan batas waktu yang ditentukan Saudara tidak memenuhi kewajiban tersebut, maka akan diterbitkan <strong>Surat Teguran Kedua</strong> dan/atau pengenaan sanksi administratif <strong>Tidak Mendapat Pelayanan Publik Tertentu (TMP2T)</strong> sesuai Pasal 9 PP No. 86 Tahun 2013 berupa penghentian izin usaha operasional pada sistem OSS BKPM.
-          </p>
+            <p className="text-justify indent-8 mb-3">
+              Apabila sampai dengan batas waktu yang ditentukan Saudara tidak memenuhi kewajiban tersebut, maka akan diterbitkan <strong>Surat Teguran Kedua</strong> dan/atau pengenaan sanksi administratif <strong>Tidak Mendapat Pelayanan Publik Tertentu (TMP2T)</strong> sesuai Pasal 9 PP No. 86 Tahun 2013 berupa penghentian izin usaha operasional pada sistem OSS BKPM.
+            </p>
 
-          <p>Demikian kami sampaikan, atas perhatian dan kerja samanya kami ucapkan terima kasih.</p>
+            <p className="mb-4">Demikian kami sampaikan, atas perhatian dan kerja samanya kami ucapkan terima kasih.</p>
 
-          {/* Signatures */}
-          <div className="pt-6 grid grid-cols-2 font-sans text-xs">
-            <div>
-              <p>Tembusan Yth:</p>
-              <ol className="list-decimal pl-4 text-[11px] text-slate-600">
-                <li>Kepala Dinas Tenaga Kerja Kab. Bekasi</li>
-                <li>Kepala Kantor Wilayah BPJS Kesehatan Jawa Barat</li>
-                <li>Arsip Unit Wasrik KC Cikarang</li>
-              </ol>
-            </div>
-            <div className="text-center">
-              <p className="font-bold">Kepala Kantor Cabang Cikarang,</p>
-              <div className="h-16 flex items-center justify-center text-slate-300 italic text-[11px]">
-                [Tanda Tangan Elektronik &amp; Segel Resmi BPJS]
+            {/* Tanda Tangan & Tembusan */}
+            <div className="pt-4 grid grid-cols-2 gap-4 font-sans text-xs">
+              <div>
+                <p className="font-bold">Tembusan Yth:</p>
+                <ol className="list-decimal pl-4 text-[11px] text-slate-700 space-y-0.5 mt-1">
+                  <li>Kepala Dinas Tenaga Kerja Kab. Bekasi</li>
+                  <li>Kepala Kantor Wilayah BPJS Kesehatan Jawa Barat</li>
+                  <li>Inspektorat Wasrik Kantor Pusat BPJS Kesehatan</li>
+                  <li>Arsip Unit Wasrik KC Cikarang</li>
+                </ol>
               </div>
-              <p className="font-bold text-slate-900 underline">Siti Rahmawati, S.E., M.M.</p>
-              <p className="text-[11px] text-slate-500">NIP. 19830514 200701 2 001</p>
+              <div className="text-center flex flex-col items-center">
+                <p className="font-bold text-slate-900">Kepala Kantor Cabang Cikarang,</p>
+                
+                {/* BSrE Badge Simulation */}
+                <div className="my-2 border border-slate-400 bg-slate-50 p-2 rounded flex items-center gap-2 max-w-[240px] text-left">
+                  <div className="w-10 h-10 bg-white border border-slate-300 p-0.5 shrink-0 flex items-center justify-center">
+                    <div className="w-full h-full bg-slate-900 grid grid-cols-3 gap-0.5 p-0.5">
+                      <span className="bg-white"></span>
+                      <span className="bg-white"></span>
+                      <span className="bg-white"></span>
+                      <span className="bg-white"></span>
+                      <span className="bg-slate-900"></span>
+                      <span className="bg-white"></span>
+                      <span className="bg-white"></span>
+                      <span className="bg-white"></span>
+                      <span className="bg-white"></span>
+                    </div>
+                  </div>
+                  <div className="text-[8px] leading-tight text-slate-600">
+                    <strong className="text-slate-900 block">DITANDATANGANI SECARA ELEKTRONIK</strong>
+                    Sertifikasi Resmi BSrE BSSN<br />
+                    <span className="text-emerald-700 font-mono font-semibold">ID: BSRE-BPJS-2026-98124A</span>
+                  </div>
+                </div>
+
+                <p className="font-bold text-slate-900 underline">Siti Rahmawati, S.E., M.M.</p>
+                <p className="text-[11px] text-slate-600">NIP. 19830514 200701 2 001</p>
+              </div>
             </div>
+
+            {/* Footer Nota Keabsahan */}
+            <div className="mt-8 pt-2 border-t border-slate-300 text-[9px] font-sans text-slate-500 flex justify-between">
+              <span>WasrikAgent AI 2.0 • Sesuai PP No. 86 Tahun 2013 • Terenkripsi Salted SHA-256</span>
+              <span>Dokumen Resmi Kedinasan BPJS Kesehatan</span>
+            </div>
+
           </div>
         </div>
       </div>

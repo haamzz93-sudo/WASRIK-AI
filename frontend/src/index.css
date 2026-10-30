@@ -118,3 +118,18 @@ section[id] {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.6);
 }
+
+/* ==================== CLEAN A4 DOCUMENT PRINT STYLES ==================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 20mm 20mm 20mm 25mm;
+  }
+  
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: 'Times New Roman', Times, serif !important;
+  }
+}
+
