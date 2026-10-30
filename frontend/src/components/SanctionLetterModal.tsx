@@ -36,7 +36,7 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
   <style>
     @page {
       size: A4 portrait;
-      margin: 16mm 20mm 15mm 22mm; /* Standar Persuratan Dinas RI */
+      margin: 10mm 18mm 10mm 20mm; /* Standar Persuratan Dinas RI Pas 1 Halaman */
     }
     *, *::before, *::after {
       box-sizing: border-box;
@@ -45,8 +45,8 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     }
     body {
       font-family: 'Times New Roman', Times, serif;
-      font-size: 11pt;
-      line-height: 1.35;
+      font-size: 10pt;
+      line-height: 1.25;
       color: #000000;
       background: #ffffff;
       -webkit-print-color-adjust: exact;
@@ -56,13 +56,13 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     .kop-wrapper {
       display: flex;
       align-items: center;
-      padding-bottom: 6px;
+      padding-bottom: 4px;
       margin-bottom: 2px;
     }
     .kop-logo {
-      width: 68px;
-      height: 68px;
-      margin-right: 16px;
+      width: 58px;
+      height: 58px;
+      margin-right: 14px;
       flex-shrink: 0;
     }
     .kop-text {
@@ -71,15 +71,15 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     }
     .kop-text .instansi-1 {
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 13pt;
+      font-size: 11.5pt;
       font-weight: 900;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.6px;
       color: #000000;
       line-height: 1.15;
     }
     .kop-text .instansi-2 {
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 11.5pt;
+      font-size: 10.5pt;
       font-weight: 700;
       color: #000000;
       margin-top: 1px;
@@ -87,32 +87,32 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     }
     .kop-text .instansi-unit {
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 9.5pt;
+      font-size: 8.5pt;
       font-weight: 700;
       color: #006930;
-      margin-top: 2px;
+      margin-top: 1px;
       letter-spacing: 0.3px;
     }
     .kop-text .alamat {
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 8pt;
+      font-size: 7.5pt;
       color: #333333;
-      margin-top: 3px;
-      line-height: 1.25;
+      margin-top: 2px;
+      line-height: 1.2;
     }
     /* GARIS GANDA STANDAR PERSURATAN RESMI */
     .garis-kop {
-      border-top: 2.5px solid #000000;
-      border-bottom: 0.8px solid #000000;
-      height: 4px;
-      margin-bottom: 14px;
+      border-top: 2px solid #000000;
+      border-bottom: 0.6px solid #000000;
+      height: 3px;
+      margin-bottom: 10px;
     }
     /* META SURAT */
     .meta-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 12px;
-      font-size: 10.5pt;
+      margin-bottom: 8px;
+      font-size: 9.5pt;
     }
     .meta-table td {
       vertical-align: top;
@@ -126,36 +126,36 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     p.isi {
       text-align: justify;
       text-justify: inter-ideograph;
-      text-indent: 1.25cm;
-      margin-bottom: 9px;
-      font-size: 11pt;
-      line-height: 1.38;
+      text-indent: 1.2cm;
+      margin-bottom: 6px;
+      font-size: 10pt;
+      line-height: 1.28;
     }
     p.biasa {
       text-align: justify;
-      margin-bottom: 9px;
-      font-size: 11pt;
-      line-height: 1.38;
+      margin-bottom: 6px;
+      font-size: 10pt;
+      line-height: 1.28;
     }
     /* TABEL TEMUAN */
     table.temuan-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 12px 0 14px 0;
-      font-size: 10pt;
+      margin: 8px 0 10px 0;
+      font-size: 9pt;
     }
     table.temuan-table th {
       background-color: #f2f2f2;
       border: 1px solid #000000;
-      padding: 6px 8px;
+      padding: 4px 6px;
       font-weight: bold;
       text-align: center;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 9.5pt;
+      font-size: 8.5pt;
     }
     table.temuan-table td {
       border: 1px solid #000000;
-      padding: 5px 8px;
+      padding: 4px 6px;
       vertical-align: top;
     }
     table.temuan-table .text-center {
@@ -170,65 +170,65 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     }
     /* BAGIAN TANDA TANGAN */
     .ttd-section {
-      margin-top: 16px;
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
       page-break-inside: avoid;
     }
     .tembusan-block {
       width: 48%;
-      font-size: 9pt;
+      font-size: 8.5pt;
     }
     .tembusan-block ol {
-      margin-left: 18px;
-      margin-top: 3px;
+      margin-left: 16px;
+      margin-top: 2px;
     }
     .pejabat-block {
       width: 48%;
       text-align: center;
-      font-size: 10.5pt;
+      font-size: 9.5pt;
     }
     /* BSrE ELECTRONIC SIGNATURE SEAL */
     .bsre-container {
-      margin: 8px auto;
+      margin: 6px auto;
       border: 1px solid #777777;
       background: #fafafa;
-      padding: 5px 8px;
+      padding: 4px 6px;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       border-radius: 4px;
-      max-width: 290px;
+      max-width: 270px;
       text-align: left;
     }
     .bsre-qr {
-      width: 50px;
-      height: 50px;
+      width: 44px;
+      height: 44px;
       flex-shrink: 0;
     }
     .bsre-text {
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 7pt;
-      line-height: 1.25;
+      font-size: 6.5pt;
+      line-height: 1.2;
       color: #333333;
     }
     .pejabat-nama {
       font-weight: bold;
       text-decoration: underline;
-      font-size: 11pt;
+      font-size: 10pt;
       margin-top: 2px;
     }
     .pejabat-nip {
-      font-size: 9pt;
+      font-size: 8.5pt;
       color: #333333;
     }
     /* FOOTER CATATAN HUKUM */
     .legal-footer {
-      margin-top: 18px;
+      margin-top: 12px;
       border-top: 0.8px solid #aaaaaa;
-      padding-top: 4px;
+      padding-top: 3px;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 7pt;
+      font-size: 6.5pt;
       color: #555555;
       display: flex;
       justify-content: space-between;
