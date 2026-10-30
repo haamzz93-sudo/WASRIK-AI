@@ -55,3 +55,6 @@ Thumbs.db
 # Large binaries / temporary installers
 *.tmp
 OllamaSetup.exe
+
+# External Data Services (Separated in own Git Repository)
+WEB DATA/
