@@ -28,7 +28,6 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
 
   // Enterprise Print Handler: Prints pristine isolated A4 official document
   const handlePrint = () => {
-    // Generate isolated printable HTML for clean A4 printing without modal artifacts
     const printHtml = `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -37,7 +36,7 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
   <style>
     @page {
       size: A4 portrait;
-      margin: 20mm 20mm 20mm 25mm; /* Standar Persuratan Dinas RI */
+      margin: 16mm 20mm 15mm 22mm; /* Standar Persuratan Dinas RI */
     }
     *, *::before, *::after {
       box-sizing: border-box;
@@ -57,13 +56,13 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     .kop-wrapper {
       display: flex;
       align-items: center;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       margin-bottom: 2px;
     }
     .kop-logo {
-      width: 72px;
-      height: 72px;
-      margin-right: 18px;
+      width: 68px;
+      height: 68px;
+      margin-right: 16px;
       flex-shrink: 0;
     }
     .kop-text {
@@ -72,27 +71,27 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     }
     .kop-text .instansi-1 {
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 12.5pt;
+      font-size: 13pt;
       font-weight: 900;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       color: #000000;
-      line-height: 1.2;
+      line-height: 1.15;
     }
     .kop-text .instansi-2 {
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 11pt;
+      font-size: 11.5pt;
       font-weight: 700;
       color: #000000;
       margin-top: 1px;
-      line-height: 1.2;
+      line-height: 1.15;
     }
     .kop-text .instansi-unit {
       font-family: Arial, Helvetica, sans-serif;
       font-size: 9.5pt;
       font-weight: 700;
       color: #006930;
-      margin-top: 1px;
-      letter-spacing: 0.5px;
+      margin-top: 2px;
+      letter-spacing: 0.3px;
     }
     .kop-text .alamat {
       font-family: Arial, Helvetica, sans-serif;
@@ -106,13 +105,13 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
       border-top: 2.5px solid #000000;
       border-bottom: 0.8px solid #000000;
       height: 4px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     /* META SURAT */
     .meta-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       font-size: 10.5pt;
     }
     .meta-table td {
@@ -128,21 +127,21 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
       text-align: justify;
       text-justify: inter-ideograph;
       text-indent: 1.25cm;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
       font-size: 11pt;
-      line-height: 1.4;
+      line-height: 1.38;
     }
     p.biasa {
       text-align: justify;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
       font-size: 11pt;
-      line-height: 1.4;
+      line-height: 1.38;
     }
     /* TABEL TEMUAN */
     table.temuan-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 14px 0 16px 0;
+      margin: 12px 0 14px 0;
       font-size: 10pt;
     }
     table.temuan-table th {
@@ -156,7 +155,7 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     }
     table.temuan-table td {
       border: 1px solid #000000;
-      padding: 6px 8px;
+      padding: 5px 8px;
       vertical-align: top;
     }
     table.temuan-table .text-center {
@@ -171,40 +170,40 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     }
     /* BAGIAN TANDA TANGAN */
     .ttd-section {
-      margin-top: 20px;
+      margin-top: 16px;
       display: flex;
       justify-content: space-between;
       page-break-inside: avoid;
     }
     .tembusan-block {
-      width: 45%;
-      font-size: 9.5pt;
+      width: 48%;
+      font-size: 9pt;
     }
     .tembusan-block ol {
       margin-left: 18px;
       margin-top: 3px;
     }
     .pejabat-block {
-      width: 50%;
+      width: 48%;
       text-align: center;
       font-size: 10.5pt;
     }
     /* BSrE ELECTRONIC SIGNATURE SEAL */
     .bsre-container {
-      margin: 10px auto;
-      border: 1px solid #888888;
+      margin: 8px auto;
+      border: 1px solid #777777;
       background: #fafafa;
-      padding: 6px 8px;
+      padding: 5px 8px;
       display: inline-flex;
       align-items: center;
       gap: 10px;
       border-radius: 4px;
-      max-width: 280px;
+      max-width: 290px;
       text-align: left;
     }
     .bsre-qr {
-      width: 54px;
-      height: 54px;
+      width: 50px;
+      height: 50px;
       flex-shrink: 0;
     }
     .bsre-text {
@@ -217,19 +216,19 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
       font-weight: bold;
       text-decoration: underline;
       font-size: 11pt;
-      margin-top: 4px;
+      margin-top: 2px;
     }
     .pejabat-nip {
-      font-size: 9.5pt;
+      font-size: 9pt;
       color: #333333;
     }
     /* FOOTER CATATAN HUKUM */
     .legal-footer {
-      margin-top: 25px;
-      border-top: 0.8px solid #999999;
-      padding-top: 6px;
+      margin-top: 18px;
+      border-top: 0.8px solid #aaaaaa;
+      padding-top: 4px;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 7.5pt;
+      font-size: 7pt;
       color: #555555;
       display: flex;
       justify-content: space-between;
@@ -239,7 +238,27 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
 <body>
   <!-- KOP SURAT DINAS -->
   <div class="kop-wrapper">
-    <img src="/assets/wasrik-logo.svg" alt="BPJS Logo" class="kop-logo" />
+    <div class="kop-logo">
+      <svg viewBox="0 0 100 100" width="68" height="68" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00A852" />
+            <stop offset="100%" stop-color="#006930" />
+          </linearGradient>
+          <linearGradient id="gGold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FBBF24" />
+            <stop offset="100%" stop-color="#D97706" />
+          </linearGradient>
+        </defs>
+        <path d="M 50 4 C 74 4, 94 14, 94 36 C 94 65, 68 88, 50 96 C 32 88, 6 65, 6 36 C 6 14, 26 4, 50 4 Z" fill="url(#gGreen)" />
+        <path d="M 50 10 C 70 10, 87 19, 87 37 C 87 61, 65 82, 50 89 C 35 82, 13 61, 13 37 C 13 19, 30 10, 50 10 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1.5" />
+        <path d="M 33 34 L 41 64 L 46 64 L 41 34 Z" fill="#FFFFFF" />
+        <path d="M 46 64 L 50 46 L 54 64 Z" fill="#FFFFFF" />
+        <circle cx="50" cy="42" r="3.5" fill="url(#gGold)" stroke="#FFFFFF" stroke-width="1" />
+        <path d="M 59 34 L 54 64 L 59 64 L 67 34 Z" fill="#FFFFFF" />
+        <path d="M 58 54 L 66 62 L 80 44" fill="none" stroke="url(#gGold)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
     <div class="kop-text">
       <div class="instansi-1">BPJS KESEHATAN</div>
       <div class="instansi-2">KANTOR CABANG CIKARANG</div>
@@ -257,8 +276,8 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
     <tr>
       <td style="width: 12%;">Nomor</td>
       <td style="width: 2%;">:</td>
-      <td style="width: 46%;"><strong>${letterNumber}</strong></td>
-      <td style="width: 40%; text-align: right;">Cikarang, ${currentDate}</td>
+      <td style="width: 44%;"><strong>${letterNumber}</strong></td>
+      <td style="width: 42%; text-align: right;">Cikarang, ${currentDate}</td>
     </tr>
     <tr>
       <td>Sifat</td>
@@ -288,7 +307,7 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
   <p class="biasa">Dengan hormat,</p>
   
   <p class="isi">
-    Berdasarkan ketentuan <strong>Undang-Undang Nomor 24 Tahun 2011</strong> tentang Badan Penyelenggara Jaminan Sosial, dan <strong>Peraturan Pemerintah Nomor 86 Tahun 2013</strong> tentang Tata Cara Pengenaan Sanksi Administratif Kepada Pemberi Kerja Selain Penyelenggara Negara dan Setiap Orang Selain Pemberi Kerja, Pekerja, dan Penerima Bantuan Iuran dalam Penyelenggaraan Jaminan Sosial, dengan ini kami sampaikan bahwa Unit Kerja Pengawasan dan Pemeriksaan (Wasrik) BPJS Kesehatan Kantor Cabang Cikarang telah melaksanakan pemeriksaan silang kepatuhan data kepesertaan dan iuran terhadap Badan Usaha yang Saudara pimpin.
+    Berdasarkan ketentuan <strong>Undang-Undang Nomor 24 Tahun 2011</strong> tentang Badan Penyelenggara Jaminan Sosial, dan <strong>Peraturan Pemerintah Nomor 86 Tahun 2013</strong> tentang Tata Cara Pengenaan Sanksi Administratif Kepada Pemberi Kerja Selain Penyelenggara Negara, dengan ini kami sampaikan bahwa Unit Kerja Pengawasan dan Pemeriksaan (Wasrik) BPJS Kesehatan Kantor Cabang Cikarang telah melaksanakan pemeriksaan silang kepatuhan data kepesertaan dan iuran terhadap Badan Usaha yang Saudara pimpin.
   </p>
 
   <p class="isi">
@@ -362,19 +381,15 @@ export const SanctionLetterModal: React.FC<SanctionLetterModalProps> = ({
         <!-- Crisp Vector QR Code -->
         <svg class="bsre-qr" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="100" height="100" fill="#ffffff" />
-          <!-- Corner Pos 1 -->
           <rect x="5" y="5" width="28" height="28" fill="#000000" />
           <rect x="9" y="9" width="20" height="20" fill="#ffffff" />
           <rect x="13" y="13" width="12" height="12" fill="#000000" />
-          <!-- Corner Pos 2 -->
           <rect x="67" y="5" width="28" height="28" fill="#000000" />
           <rect x="71" y="9" width="20" height="20" fill="#ffffff" />
           <rect x="75" y="13" width="12" height="12" fill="#000000" />
-          <!-- Corner Pos 3 -->
           <rect x="5" y="67" width="28" height="28" fill="#000000" />
           <rect x="9" y="71" width="20" height="20" fill="#ffffff" />
           <rect x="13" y="75" width="12" height="12" fill="#000000" />
-          <!-- Data dots pattern -->
           <rect x="40" y="8" width="6" height="6" fill="#000000" />
           <rect x="52" y="8" width="6" height="6" fill="#000000" />
           <rect x="40" y="20" width="6" height="6" fill="#000000" />
