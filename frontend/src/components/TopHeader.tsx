@@ -10,7 +10,6 @@ interface TopHeaderProps {
   onOpenDatasheet: () => void;
   onSwitchRole: (role: UserProfile['role']) => void;
   onToggleMobileMenu?: () => void;
-  onStartTour?: () => void;
 }
 
 export const TopHeader: React.FC<TopHeaderProps> = ({
@@ -20,7 +19,6 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   onOpenDatasheet,
   onSwitchRole,
   onToggleMobileMenu,
-  onStartTour,
 }) => {
   const { theme, toggleTheme } = useTheme();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -141,24 +139,6 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           <span className="text-emerald-400/50">•</span>
           <span className="text-emerald-300 font-bold">:8787 ON</span>
         </div>
-
-        {/* Interactive Tour Guide Trigger Button */}
-        {onStartTour && (
-          <button
-            type="button"
-            onClick={onStartTour}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 border border-emerald-400/50 rounded-xl transition-all duration-200 active:scale-95 cursor-pointer shadow-xs backdrop-blur-xs ring-1 ring-emerald-300/30 group"
-            title="Buka Tur Panduan Interaktif Sistem Step-by-Step"
-          >
-            <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-xs shrink-0 group-hover:scale-110 transition-transform">
-              <svg className="w-2.5 h-2.5 fill-current ml-0.5" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </span>
-            <span className="hidden sm:inline">Tur Interaktif</span>
-            <span className="sm:hidden">Tur</span>
-          </button>
-        )}
 
         {/* Data Sample Modal Trigger Button */}
         <button

@@ -19,7 +19,7 @@ import { InteractiveTourGuide } from './components/InteractiveTourGuide';
 
 import { MOCK_EMPLOYERS, MOCK_FINDINGS, CURRENT_USER } from './data/mockData';
 import { Employer, AgentFinding, UserProfile } from './types/wasrik';
-import { getSavedSession, saveSession, updateActiveView, clearSession } from './utils/session';
+import { getSavedSession, saveSession, updateActiveView, clearSession, recordActivity, isSessionExpired } from './utils/session';
 
 export const App: React.FC = () => {
   // Enterprise Session & Cookie Restoration
@@ -77,6 +77,40 @@ export const App: React.FC = () => {
   const [isDatasheetOpen, setIsDatasheetOpen] = useState(false);
   const [isSanctionModalOpen, setIsSanctionModalOpen] = useState(false);
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const [isSessionTimeoutOpen, setIsSessionTimeoutOpen] = useState(() => Boolean(session.isTimedOut));
+
+  // 30-Minute Inactivity Auto-Logout Tracker (UU PDP & Resource Saver)
+  useEffect(() => {
+    let lastRecord = Date.now();
+
+    const handleActivity = () => {
+      const now = Date.now();
+      // Throttle recording to once every 15 seconds to keep it lightweight
+      if (now - lastRecord > 15000) {
+        lastRecord = now;
+        recordActivity();
+      }
+    };
+
+    const events = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'];
+    events.forEach((evt) => window.addEventListener(evt, handleActivity, { passive: true }));
+
+    // Check expiration every 30 seconds
+    const interval = setInterval(() => {
+      if (isSessionExpired()) {
+        clearSession();
+        setIsSessionTimeoutOpen(true);
+        setCurrentView('landing');
+        updateActiveView('landing');
+        window.location.hash = 'landing';
+      }
+    }, 30000);
+
+    return () => {
+      events.forEach((evt) => window.removeEventListener(evt, handleActivity));
+      clearInterval(interval);
+    };
+  }, []);
 
   // Unified persistent navigation
   const navigateTo = (view: string) => {
@@ -281,7 +315,6 @@ export const App: React.FC = () => {
             navigateTo('uploader');
           }}
           onOpenDatasheet={() => setIsDatasheetOpen(true)}
-          onStartTour={() => setIsTourOpen(true)}
         />
         <DatasheetModal
           isOpen={isDatasheetOpen}
@@ -299,6 +332,34 @@ export const App: React.FC = () => {
             navigateTo(view);
           }}
         />
+        {/* Session Inactivity Timeout Modal */}
+        {isSessionTimeoutOpen && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-emerald-500/40 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl animate-fade-in text-white ring-1 ring-white/10">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mx-auto mb-4 text-amber-400">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">
+                Sesi Login Berakhir (Auto Logout)
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed mb-6">
+                Sesi kerja Anda telah diakhiri secara otomatis setelah <strong>30 menit tidak ada aktivitas</strong> untuk menghemat memori perangkat dan mematuhi tata kelola privasi <strong>UU PDP No. 27/2022</strong>.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSessionTimeoutOpen(false);
+                  navigateTo('login');
+                }}
+                className="w-full py-3 px-4 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 transition-all cursor-pointer shadow-lg"
+              >
+                Masuk Kembali ke Portal SSO Wasrik
+              </button>
+            </div>
+          </div>
+        )}
       </>
     );
   }
@@ -349,7 +410,6 @@ export const App: React.FC = () => {
           currentView={currentView}
           onNavigate={(view) => navigateTo(view)}
           onOpenDatasheet={() => setIsDatasheetOpen(true)}
-          onStartTour={() => setIsTourOpen(true)}
           onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
           onSwitchRole={(role) => {
             const updated: UserProfile = {
@@ -432,6 +492,35 @@ export const App: React.FC = () => {
         currentView={currentView}
         onNavigate={(view) => navigateTo(view)}
       />
+
+      {/* Session Inactivity Timeout Modal (30 Minutes) */}
+      {isSessionTimeoutOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-emerald-500/40 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl animate-fade-in text-white ring-1 ring-white/10">
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mx-auto mb-4 text-amber-400">
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">
+              Sesi Login Berakhir (Auto Logout)
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed mb-6">
+              Sesi kerja Anda telah diakhiri secara otomatis setelah <strong>30 menit tidak ada aktivitas</strong> untuk menghemat memori perangkat dan mematuhi tata kelola privasi <strong>UU PDP No. 27/2022</strong>.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setIsSessionTimeoutOpen(false);
+                navigateTo('login');
+              }}
+              className="w-full py-3 px-4 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-98 transition-all cursor-pointer shadow-lg"
+            >
+              Masuk Kembali ke Portal SSO Wasrik
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
