@@ -206,7 +206,11 @@ export const InteractiveTourGuide: React.FC<InteractiveTourGuideProps> = ({
         {/* Top Header Bar with Progress */}
         <div className="px-4 py-3 bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 border-b border-emerald-500/30 flex items-center justify-between">
           <div className="flex items-center gap-2.5 min-w-0">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)] shrink-0" />
+            <span className="w-5 h-5 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-xs shrink-0 shadow-[0_0_10px_rgba(251,191,36,0.8)]">
+              <svg className="w-2.5 h-2.5 fill-current ml-0.5" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold text-emerald-400 tracking-wider uppercase">

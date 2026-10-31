@@ -149,9 +149,13 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
               <button
                 type="button"
                 onClick={onStartTour}
-                className="hidden sm:inline-flex px-3 py-1.5 text-[11px] font-bold text-emerald-950 dark:text-emerald-200 bg-emerald-300 dark:bg-emerald-900/80 hover:bg-emerald-200 rounded-full transition-all cursor-pointer shadow-xs whitespace-nowrap items-center gap-1.5 border border-emerald-400"
+                className="hidden sm:inline-flex px-3 py-1.5 text-[11px] font-bold text-emerald-950 dark:text-emerald-100 bg-emerald-300 dark:bg-emerald-900/80 hover:bg-emerald-200 dark:hover:bg-emerald-800 rounded-full transition-all cursor-pointer shadow-xs whitespace-nowrap items-center gap-1.5 border border-emerald-400 group"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-700 dark:bg-emerald-300 animate-ping" />
+                <span className="w-3.5 h-3.5 rounded-full bg-emerald-800 dark:bg-emerald-400 text-white dark:text-slate-950 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                  <svg className="w-2 h-2 fill-current ml-0.5" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
                 <span>Tur Interaktif</span>
               </button>
             )}
@@ -236,10 +240,14 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
               <button
                 type="button"
                 onClick={onStartTour}
-                className="w-full sm:w-auto px-5 py-3 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-full transition-all cursor-pointer shadow-md hover:shadow-lg active:scale-95 text-center flex items-center justify-center gap-2 border border-emerald-400/50"
+                className="w-full sm:w-auto px-5 py-3 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 rounded-full transition-all cursor-pointer shadow-lg hover:shadow-emerald-900/40 active:scale-95 text-center flex items-center justify-center gap-2.5 border border-emerald-400/50 group"
               >
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                <span>▶️ Mulai Tur Interaktif (Demo)</span>
+                <span className="w-5 h-5 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-xs shrink-0 group-hover:scale-110 transition-transform">
+                  <svg className="w-2.5 h-2.5 fill-current ml-0.5" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+                <span>Mulai Tur Interaktif (Demo)</span>
               </button>
             )}
           </div>
