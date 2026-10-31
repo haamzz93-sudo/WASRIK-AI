@@ -24,6 +24,7 @@ interface SidebarProps {
   onToggleCollapse: () => void;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
+  onStartTour?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -36,6 +37,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleCollapse,
   isMobileOpen,
   onCloseMobile,
+  onStartTour,
 }) => {
   const { theme, toggleTheme } = useTheme();
 
@@ -414,6 +416,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Bottom Footer Info & Logout */}
       <div className="p-3 border-t border-white/10 space-y-2">
+        {/* Interactive Tour Guide Button */}
+        {onStartTour && (
+          <button
+            type="button"
+            onClick={onStartTour}
+            title="Mulai Tur Panduan Interaktif Sistem"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 border border-emerald-400/50 rounded-xl transition-all duration-200 active:scale-98 cursor-pointer shadow-xs"
+          >
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0" />
+            {!isCollapsed && <span>Tur Panduan Interaktif</span>}
+          </button>
+        )}
+
         {/* Quick Datasheet trigger */}
         <button
           onClick={onOpenDatasheet}

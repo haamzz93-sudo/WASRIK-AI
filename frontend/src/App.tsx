@@ -15,6 +15,7 @@ import { SyntheticDataGenerator } from './components/SyntheticDataGenerator';
 import { ArchitectureDocsView } from './components/ArchitectureDocsView';
 import { DatasheetModal } from './components/DatasheetModal';
 import { SanctionLetterModal } from './components/SanctionLetterModal';
+import { InteractiveTourGuide } from './components/InteractiveTourGuide';
 
 import { MOCK_EMPLOYERS, MOCK_FINDINGS, CURRENT_USER } from './data/mockData';
 import { Employer, AgentFinding, UserProfile } from './types/wasrik';
@@ -75,6 +76,7 @@ export const App: React.FC = () => {
   // Modals state
   const [isDatasheetOpen, setIsDatasheetOpen] = useState(false);
   const [isSanctionModalOpen, setIsSanctionModalOpen] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   // Unified persistent navigation
   const navigateTo = (view: string) => {
@@ -279,10 +281,23 @@ export const App: React.FC = () => {
             navigateTo('uploader');
           }}
           onOpenDatasheet={() => setIsDatasheetOpen(true)}
+          onStartTour={() => setIsTourOpen(true)}
         />
         <DatasheetModal
           isOpen={isDatasheetOpen}
           onClose={() => setIsDatasheetOpen(false)}
+        />
+        <InteractiveTourGuide
+          isOpen={isTourOpen}
+          onClose={() => setIsTourOpen(false)}
+          currentView={currentView}
+          onNavigate={(view) => {
+            if (view !== 'landing' && !session.isAuthenticated) {
+              saveSession(CURRENT_USER, 'wasrik_demo_session_token_2026', view);
+              setCurrentUser(CURRENT_USER);
+            }
+            navigateTo(view);
+          }}
         />
       </>
     );
@@ -323,6 +338,7 @@ export const App: React.FC = () => {
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         isMobileOpen={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
+        onStartTour={() => setIsTourOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -333,6 +349,7 @@ export const App: React.FC = () => {
           currentView={currentView}
           onNavigate={(view) => navigateTo(view)}
           onOpenDatasheet={() => setIsDatasheetOpen(true)}
+          onStartTour={() => setIsTourOpen(true)}
           onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
           onSwitchRole={(role) => {
             const updated: UserProfile = {
@@ -406,6 +423,14 @@ export const App: React.FC = () => {
         onClose={() => setIsSanctionModalOpen(false)}
         finding={activeFinding}
         employer={selectedEmployer}
+      />
+
+      {/* Interactive Tour Guide Modal / Floater */}
+      <InteractiveTourGuide
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        currentView={currentView}
+        onNavigate={(view) => navigateTo(view)}
       />
     </div>
   );

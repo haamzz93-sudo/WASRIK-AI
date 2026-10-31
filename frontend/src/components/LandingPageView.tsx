@@ -10,6 +10,7 @@ interface LandingPageViewProps {
   onGoToQueue: () => void;
   onGoToUploader: () => void;
   onOpenDatasheet: () => void;
+  onStartTour?: () => void;
 }
 
 export const LandingPageView: React.FC<LandingPageViewProps> = ({
@@ -18,6 +19,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
   onGoToQueue,
   onGoToUploader,
   onOpenDatasheet,
+  onStartTour,
 }) => {
   const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -143,6 +145,17 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
               )}
             </button>
 
+            {onStartTour && (
+              <button
+                type="button"
+                onClick={onStartTour}
+                className="hidden sm:inline-flex px-3 py-1.5 text-[11px] font-bold text-emerald-950 dark:text-emerald-200 bg-emerald-300 dark:bg-emerald-900/80 hover:bg-emerald-200 rounded-full transition-all cursor-pointer shadow-xs whitespace-nowrap items-center gap-1.5 border border-emerald-400"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-700 dark:bg-emerald-300 animate-ping" />
+                <span>Tur Interaktif</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={onOpenDatasheet}
@@ -219,6 +232,16 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             >
               Antrean 523k Badan Usaha
             </button>
+            {onStartTour && (
+              <button
+                type="button"
+                onClick={onStartTour}
+                className="w-full sm:w-auto px-5 py-3 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-full transition-all cursor-pointer shadow-md hover:shadow-lg active:scale-95 text-center flex items-center justify-center gap-2 border border-emerald-400/50"
+              >
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                <span>▶️ Mulai Tur Interaktif (Demo)</span>
+              </button>
+            )}
           </div>
 
           {/* Legal Compliance Indicator Badges */}
