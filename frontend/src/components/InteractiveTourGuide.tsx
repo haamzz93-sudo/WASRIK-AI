@@ -132,16 +132,6 @@ export const InteractiveTourGuide: React.FC<InteractiveTourGuideProps> = ({
   const [isMinimized, setIsMinimized] = useState(false);
   const [autoNavigate, setAutoNavigate] = useState(true);
 
-  // Sync step with currentView if user navigates manually via sidebar
-  useEffect(() => {
-    const idx = TOUR_STEPS.findIndex((s) => s.view === currentView);
-    if (idx !== -1 && idx !== currentStepIndex) {
-      setCurrentStepIndex(idx);
-    }
-  }, [currentView]);
-
-  if (!isOpen) return null;
-
   const currentStep = TOUR_STEPS[currentStepIndex];
   const isFirst = currentStepIndex === 0;
   const isLast = currentStepIndex === TOUR_STEPS.length - 1;
@@ -169,6 +159,45 @@ export const InteractiveTourGuide: React.FC<InteractiveTourGuideProps> = ({
       goToStep(currentStepIndex - 1);
     }
   };
+
+  // Sync step with currentView if user navigates manually via sidebar
+  useEffect(() => {
+    const idx = TOUR_STEPS.findIndex((s) => s.view === currentView);
+    if (idx !== -1 && idx !== currentStepIndex) {
+      setCurrentStepIndex(idx);
+    }
+  }, [currentView]);
+
+  // Keyboard navigation support: ArrowRight / ArrowLeft / Escape
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input/textarea
+      const activeTag = document.activeElement?.tagName.toLowerCase();
+      if (activeTag === 'input' || activeTag === 'textarea') return;
+
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        e.preventDefault();
+        if (!isLast) {
+          goToStep(currentStepIndex + 1);
+        }
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        if (!isFirst) {
+          goToStep(currentStepIndex - 1);
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, currentStepIndex, isLast, isFirst]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-50 max-w-lg w-[calc(100vw-2rem)] sm:w-[480px] font-sans transition-all duration-300 animate-slide-up select-none">
@@ -304,19 +333,22 @@ export const InteractiveTourGuide: React.FC<InteractiveTourGuideProps> = ({
                 type="button"
                 onClick={handlePrev}
                 disabled={isFirst}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                title="Bisa tekan tombol panah kiri ← pada keyboard"
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
                 <span>Sebelumnya</span>
+                <kbd className="hidden sm:inline text-[9px] bg-slate-900 text-slate-400 px-1 py-0.5 rounded font-mono border border-slate-700">←</kbd>
               </button>
 
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  className="px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="Tutup (Esc)"
                 >
                   Lewati Tur
                 </button>
@@ -324,13 +356,12 @@ export const InteractiveTourGuide: React.FC<InteractiveTourGuideProps> = ({
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 shadow-md shadow-emerald-950/40 transition-all flex items-center gap-1.5 cursor-pointer border border-emerald-400/40"
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 shadow-md shadow-emerald-950/40 transition-all flex items-center gap-1.5 cursor-pointer border border-emerald-400/40"
+                  title="Bisa tekan tombol panah kanan → pada keyboard"
                 >
                   <span>{isLast ? 'Selesai Panduan ✓' : 'Selanjutnya »'}</span>
                   {!isLast && (
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                    <kbd className="hidden sm:inline text-[9px] bg-emerald-700 text-emerald-100 px-1 py-0.5 rounded font-mono border border-emerald-500/50">→</kbd>
                   )}
                 </button>
               </div>
