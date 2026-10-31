@@ -39,83 +39,251 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { theme, toggleTheme } = useTheme();
 
-  const menuGroups = [
-    {
-      groupTitle: 'AUDIT & PENGAWASAN',
-      items: [
+  // Role-Based Access Control (RBAC) Menu Generation
+  const getRoleBasedMenuGroups = (role: string) => {
+    if (role === 'supervisor') {
+      // Kepala Kantor Cabang (Siti Rahmawati, S.E., M.M.)
+      return [
         {
-          id: 'queue',
-          label: 'Antrean Prioritas BU',
-          badge: '523k BU',
-          icon: (
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-          ),
+          groupTitle: 'EKSEKUTIF & PENGAWASAN (KC)',
+          items: [
+            {
+              id: 'dashboard',
+              label: 'Peta Sebaran & Kerugian',
+              badge: 'Rp 4,25T',
+              icon: <IconGraph className="w-4 h-4" />,
+            },
+            {
+              id: 'queue',
+              label: 'Antrean Prioritas BU',
+              badge: 'Approval L2',
+              icon: (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+              ),
+            },
+            {
+              id: 'workbench',
+              label: 'Otorisasi Sanksi & E-Sign',
+              badge: 'PP 86/2013',
+              icon: (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              ),
+            },
+          ],
         },
         {
-          id: 'workbench',
-          label: 'Dual-Pane HITL Workbench',
-          badge: 'Live Gate',
-          icon: (
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          ),
+          groupTitle: 'MONITORING AI & REGULASI',
+          items: [
+            {
+              id: 'agents',
+              label: 'Monitoring 4 Agen AI',
+              badge: 'Pipeline',
+              icon: <IconCpu className="w-4 h-4" />,
+            },
+            {
+              id: 'docs',
+              label: 'Dokumen Regulasi & Data Lake',
+              badge: 'v2.0 Final',
+              icon: <IconDocument className="w-4 h-4" />,
+            },
+          ],
+        },
+      ];
+    }
+
+    if (role === 'auditee') {
+      // Perwakilan Badan Usaha / HR Director (Bambang Triyono)
+      return [
+        {
+          groupTitle: 'PORTAL MANDIRI PEMBERI KERJA',
+          items: [
+            {
+              id: 'uploader',
+              label: 'Pemeriksaan Mandiri Payroll',
+              badge: 'Self Audit',
+              icon: (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+              ),
+            },
+            {
+              id: 'workbench',
+              label: 'Lembar Tanggapan & Klarifikasi',
+              badge: 'Kasus BU',
+              icon: (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              ),
+            },
+          ],
         },
         {
-          id: 'dashboard',
-          label: 'Peta Sebaran & Kerugian',
-          badge: 'Rp 4,25T',
-          icon: <IconGraph className="w-4 h-4" />,
+          groupTitle: 'KEPATUHAN & PRIVASI',
+          items: [
+            {
+              id: 'synthetic',
+              label: 'Verifikasi Masking UU PDP',
+              badge: 'SHA-256',
+              icon: <IconShieldCheck className="w-4 h-4" />,
+            },
+            {
+              id: 'docs',
+              label: 'Panduan Sanksi PP 86/2013',
+              badge: 'Regulasi',
+              icon: <IconDocument className="w-4 h-4" />,
+            },
+          ],
         },
-      ],
-    },
-    {
-      groupTitle: 'AI AGENT & SIMULASI',
-      items: [
+      ];
+    }
+
+    if (role === 'admin') {
+      // System Administrator & Security Ops (Ilham Eka, S.Kom.)
+      return [
         {
-          id: 'hermes',
-          label: 'Hermes Agent Console',
-          badge: 'Port 8787',
-          icon: <IconTerminal className="w-4 h-4 text-emerald-300" />,
+          groupTitle: 'AI ENGINE & DIAGNOSTIK',
+          items: [
+            {
+              id: 'hermes',
+              label: 'Hermes Agent Console',
+              badge: 'Port 8787',
+              icon: <IconTerminal className="w-4 h-4 text-emerald-300" />,
+            },
+            {
+              id: 'agents',
+              label: 'Simulator Multi-Agent LangGraph',
+              badge: 'Core Engine',
+              icon: <IconCpu className="w-4 h-4" />,
+            },
+            {
+              id: 'synthetic',
+              label: 'Enkripsi Data Sintetis (PDP)',
+              badge: 'SHA-256',
+              icon: <IconShieldCheck className="w-4 h-4" />,
+            },
+          ],
         },
         {
-          id: 'agents',
-          label: 'Simulator Multi-Agent AI',
-          badge: '4 Agen',
-          icon: <IconCpu className="w-4 h-4" />,
+          groupTitle: 'DATA LAKE & DATABASE',
+          items: [
+            {
+              id: 'docs',
+              label: '6 Port Data Lake & DDL MySQL',
+              badge: 'Active :9001-9006',
+              icon: <IconDocument className="w-4 h-4" />,
+            },
+            {
+              id: 'queue',
+              label: 'Master Database 523k BU',
+              badge: 'Raw Tables',
+              icon: (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+              ),
+            },
+            {
+              id: 'workbench',
+              label: 'System Audit Trail Inspector',
+              badge: 'Audit Logs',
+              icon: (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              ),
+            },
+          ],
         },
-        {
-          id: 'uploader',
-          label: 'Upload Berkas Payroll',
-          badge: 'Mandiri',
-          icon: (
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-            </svg>
-          ),
-        },
-        {
-          id: 'synthetic',
-          label: 'Data Sintetis (UU PDP)',
-          badge: 'SHA-256',
-          icon: <IconShieldCheck className="w-4 h-4" />,
-        },
-      ],
-    },
-    {
-      groupTitle: 'STANDAR & REGULASI',
-      items: [
-        {
-          id: 'docs',
-          label: 'Dokumentasi SRS & Arsitektur',
-          badge: 'v2.0 Final',
-          icon: <IconDocument className="w-4 h-4" />,
-        },
-      ],
-    },
-  ];
+      ];
+    }
+
+    // Default: Auditor Wasrik Madya (Darmawan Lahru Riatma)
+    return [
+      {
+        groupTitle: 'AUDIT & PENGAWASAN',
+        items: [
+          {
+            id: 'workbench',
+            label: 'Dual-Pane HITL Workbench',
+            badge: 'Live Gate',
+            icon: (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            ),
+          },
+          {
+            id: 'queue',
+            label: 'Antrean Prioritas BU',
+            badge: '523k BU',
+            icon: (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+            ),
+          },
+          {
+            id: 'dashboard',
+            label: 'Peta Sebaran & Kerugian',
+            badge: 'Rp 4,25T',
+            icon: <IconGraph className="w-4 h-4" />,
+          },
+        ],
+      },
+      {
+        groupTitle: 'AI AGENT & INVESTIGASI',
+        items: [
+          {
+            id: 'hermes',
+            label: 'Hermes Agent Console',
+            badge: 'Port 8787',
+            icon: <IconTerminal className="w-4 h-4 text-emerald-300" />,
+          },
+          {
+            id: 'agents',
+            label: 'Simulator Multi-Agent AI',
+            badge: '4 Agen',
+            icon: <IconCpu className="w-4 h-4" />,
+          },
+          {
+            id: 'uploader',
+            label: 'Upload Berkas Payroll',
+            badge: 'Mandiri',
+            icon: (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+            ),
+          },
+        ],
+      },
+      {
+        groupTitle: 'STANDAR & REGULASI',
+        items: [
+          {
+            id: 'synthetic',
+            label: 'Data Sintetis (UU PDP)',
+            badge: 'SHA-256',
+            icon: <IconShieldCheck className="w-4 h-4" />,
+          },
+          {
+            id: 'docs',
+            label: 'Dokumentasi SRS & Data Lake',
+            badge: 'v2.0 Final',
+            icon: <IconDocument className="w-4 h-4" />,
+          },
+        ],
+      },
+    ];
+  };
+
+  const menuGroups = getRoleBasedMenuGroups(currentUser.role);
 
   return (
     <>
